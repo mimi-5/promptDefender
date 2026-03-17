@@ -18,7 +18,7 @@ POLICY_STRUCTURE_PATTERNS = [
     # INI section headers
     re.compile(r"\[\s*\w+\s*\]", re.IGNORECASE),
     
-    # INI key-value pairs
+    # INI key-value pairsa
     re.compile(r"^\s*\w+\s*=\s*.+$", re.MULTILINE),
     
     # Common policy-related terms
