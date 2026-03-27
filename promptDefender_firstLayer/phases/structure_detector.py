@@ -7,9 +7,9 @@ such as XML-like tags, JSON objects, and INI-style configurations.
 
 import re
 from typing import List, Optional, Pattern
-from puppetry_detector.rules.policy_patterns import POLICY_STRUCTURE_PATTERNS
+from promptDefender_firstLayer.rules.policy_patterns import POLICY_STRUCTURE_PATTERNS
 
-def detect_policy_structure(prompt: str, custom_patterns: Optional[List[Pattern]] = None) -> bool:
+def detect_policy_structure(prompt: str, custom_patterns: Optional[List[Pattern]] = None) -> dict:
     """
     Detect if a prompt contains policy-like structures.
     
@@ -25,4 +25,12 @@ def detect_policy_structure(prompt: str, custom_patterns: Optional[List[Pattern]
         bool: True if policy-like structures are detected, False otherwise
     """
     patterns = custom_patterns or POLICY_STRUCTURE_PATTERNS
-    return any(pattern.search(prompt) for pattern in patterns) 
+    matches = []
+    for pattern in patterns:
+        if pattern.search(prompt):
+            matches.append(pattern.pattern)
+
+    return {
+        "detected": len(matches) > 0,
+        "matches": matches
+    }  

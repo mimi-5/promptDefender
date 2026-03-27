@@ -7,9 +7,9 @@ such as attempts to override roles, bypass security, or manipulate permissions.
 
 import re
 from typing import List, Optional, Pattern
-from puppetry_detector.rules.malicious_patterns import MALICIOUS_POLICY_PATTERNS
+from promptDefender_firstLayer.rules.malicious_patterns import ALL_PATTERNS
 
-def detect_malicious_policy(prompt: str, custom_patterns: Optional[List[Pattern]] = None) -> bool:
+def detect_malicious_policy(prompt: str, custom_patterns: Optional[List[Pattern]] = None) -> dict:
     """
     Detect if a prompt contains malicious policy patterns.
     
@@ -24,5 +24,13 @@ def detect_malicious_policy(prompt: str, custom_patterns: Optional[List[Pattern]
     Returns:
         bool: True if malicious patterns are detected, False otherwise
     """
-    patterns = custom_patterns or MALICIOUS_POLICY_PATTERNS
-    return any(pattern.search(prompt) for pattern in patterns) 
+    patterns = custom_patterns or ALL_PATTERNS
+    matches = []
+    for pattern in patterns:
+        if pattern.search(prompt):
+            matches.append(pattern.pattern)
+
+    return {
+        "detected": len(matches) > 0,
+        "matches": matches
+    } 

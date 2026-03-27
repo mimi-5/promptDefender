@@ -32,7 +32,7 @@ POLICY_STRUCTURE_PATTERNS = [
     re.compile(r"^\s*on_\w+:\s*$", re.MULTILINE),  # Event handlers
     re.compile(r"^\s*role:\s*\w+", re.MULTILINE),  # Role definitions
     re.compile(r"^\s*action:\s*\w+", re.MULTILINE),  # Action definitions
-    
+      
     # Markdown-style headers
     re.compile(r"^#+\s*\w+", re.MULTILINE),
     
