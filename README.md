@@ -55,7 +55,7 @@ Run all cells to evaluate the detection system.
 ### Structure Detection
 - **File:** `phases/structure_detector.py`
 - **Uses:** `rules/policy_patterns.py`
-- **Detects:`
+- **Detects:**
   - Suspicious structures
   - Hidden instructions
   - Policy violations
@@ -65,11 +65,12 @@ The outputs of both phases are combined to classify prompts as:
 Benign
 Suspicious / Malicious
 ## Dataset
-Location: Tests/data/Prompt_INJECTION_And_Benign_DATASET.jsonl
-Contains:
-Benign prompts
-Prompt injection examples
-Expected outputs
+**Location**: Tests/data/Prompt_INJECTION_And_Benign_DATASET.jsonl
+**Contains:**
+ -Benign prompts
+ -Prompt injection examples
+ -Expected outputs
+ 
 Errors and flagged prompts are stored in: Tests/errors.jsonl
 
 ---
