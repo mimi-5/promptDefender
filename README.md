@@ -31,10 +31,10 @@ Install dependencies:
 
 ```bash
 pip install notebook
+```
 
 
-
-Running Tests
+## Running Tests
 
 Open the Jupyter Notebook:
 
@@ -42,26 +42,29 @@ Tests/test1.ipynb
 
 Run all cells to evaluate the detection system.
 
-Detection Pipeline
-Malicious Detection
-File: phases/malicious_detector.py
-Uses: rules/malicious_patterns.py
-Detects:
-Jailbreaking attempts
-Instruction override attacks
-Data exfiltration patterns
-Structure Detection
-File: phases/structure_detector.py
-Uses: rules/policy_patterns.py
-Detects:
-Suspicious structures
-Hidden instructions
-Policy violations
-Final Decision
+
+## Detection Pipeline
+
+### Malicious Detection
+- **File:** `phases/malicious_detector.py`
+- **Uses:** `rules/malicious_patterns.py`
+- **Detects:**
+  - Jailbreaking attempts
+  - Instruction override attacks
+  - Data exfiltration patterns
+### Structure Detection
+- **File:** `phases/structure_detector.py`
+- **Uses:** `rules/policy_patterns.py`
+- **Detects:`
+  - Suspicious structures
+  - Hidden instructions
+  - Policy violations
+
+---
 The outputs of both phases are combined to classify prompts as:
 Benign
 Suspicious / Malicious
-Dataset
+## Dataset
 Location: Tests/data/Prompt_INJECTION_And_Benign_DATASET.jsonl
 Contains:
 Benign prompts
