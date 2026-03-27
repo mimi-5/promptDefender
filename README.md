@@ -5,23 +5,19 @@ PromptDefender is a rule-based system designed to detect prompt injection attack
 ---
 
 ## Project Structure
-promptDefender_firstLayer
-│
+promptDefender_firstLayer/
 ├── detector.py
-│
 ├── phases/
-│ ├── malicious_detector.py
-│ └── structure_detector.py
-│
+│   ├── malicious_detector.py
+│   └── structure_detector.py
 ├── rules/
-│ ├── malicious_patterns.py
-│ └── policy_patterns.py
-│
-├── Tests/
-│ ├── data/
-│ │ └── Prompt_INJECTION_And_Benign_DATASET.jsonl
-│ ├── errors.jsonl
-│ └── test1.ipynb
+│   ├── malicious_patterns.py
+│   └── policy_patterns.py
+└── Tests/
+    ├── data/
+    │   └── Prompt_INJECTION_And_Benign_DATASET.jsonl
+    ├── errors.jsonl
+    └── test1.ipynb
 
 ---
 
