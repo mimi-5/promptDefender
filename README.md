@@ -36,9 +36,9 @@ pip install notebook
 
 ## Run tests with the dataset
 
-Tests/test1.ipynb
+Tests/test1.ipynb(Run all cells to evaluate the system)
 
-Run all cells to evaluate the system.
+
 ---
 
 ## Detection Pipeline
