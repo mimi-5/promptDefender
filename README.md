@@ -4,7 +4,7 @@
 
 ## Project Structure
 
-
+```
 promptDefender_firstLayer/
 ├── detector.py
 ├── phases/
@@ -18,7 +18,7 @@ promptDefender_firstLayer/
 │ └── Prompt_INJECTION_And_Benign_DATASET.jsonl
 ├── errors.jsonl
 └── test1.ipynb
-
+```
 
 ---
 
