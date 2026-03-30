@@ -1,5 +1,7 @@
+Markdown
 # PromptDefender
  
+
 
 
 ## Project Structure
@@ -20,9 +22,13 @@ promptDefender_firstLayer/
 └── test1.ipynb
 ```
 
----
 
-## Requirements
+
+Package Manager: pip
+
+Installation
+Install the necessary dependencies:
+
 
 - Python 3.10 or higher  
 - pip  
@@ -30,8 +36,12 @@ promptDefender_firstLayer/
 Install dependencies:
 
 ```bash
+
 pip install notebook
-```
+Running Tests
+Open the Jupyter Notebook: Tests/test1.ipynb
+
+Execute: Run all cells to evaluate the detection system.
 
 
 ## Running Tests
@@ -61,9 +71,12 @@ Run all cells to evaluate the detection system.
   - Policy violations
 
 ---
+
 The outputs of both phases are combined to classify prompts as:
 Benign
+
 Suspicious / Malicious
+
 ## Dataset
 **Location**: Tests/data/Prompt_INJECTION_And_Benign_DATASET.jsonl
 **Contains:**
@@ -74,3 +87,4 @@ Suspicious / Malicious
 Errors and flagged prompts are stored in: Tests/errors.jsonl
 
 ---
+
