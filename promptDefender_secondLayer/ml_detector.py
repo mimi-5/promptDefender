@@ -45,7 +45,7 @@ class MLDetector:
         self,
         artifacts_dir: Optional[Path] = None,
         bert_model_name: str = "bert-base-multilingual-cased",
-        threshold: float = 0.5,
+        threshold: float = 0.9,
         device: Optional[str] = None,
     ):
         self.artifacts_dir = Path(artifacts_dir) if artifacts_dir else _DEFAULT_ARTIFACTS_DIR

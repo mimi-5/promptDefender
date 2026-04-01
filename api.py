@@ -67,7 +67,10 @@ def _build_response(
         verdict = "BLOCKED"
         blocked_by = "layer1_regex"
         reason = "Policy puppetry détectée par signatures"
-    elif layer2_result is not None and layer2_result["is_injection"]:
+    elif (
+    layer2_result is not None 
+    and layer2_result["confidence"] > 0.5
+):
         verdict = "BLOCKED"
         blocked_by = "layer2_ml"
         reason = f"Injection détectée par ML ({layer2_result['model_used']}, conf={layer2_result['confidence']})"
