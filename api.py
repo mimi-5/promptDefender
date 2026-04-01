@@ -24,7 +24,7 @@ import time
 from promptDefender_firstLayer.detector import PromptInjectionDetector
 
 # ── Couche 2 ──────────────────────────────────────────────────────────────────
-from promptDefender_secondLayer.ml_detector import MLDetector
+from promptDefender_secondLayer.ml_detector2 import MLDetector
 
 # ───────────────────────────────────────────────────────────────
 logging.basicConfig(
@@ -69,7 +69,7 @@ def _build_response(
         reason = "Policy puppetry détectée par signatures"
     elif (
     layer2_result is not None 
-    and layer2_result["confidence"] > 0.5
+    and layer2_result["confidence"] > 0.8
 ):
         verdict = "BLOCKED"
         blocked_by = "layer2_ml"
