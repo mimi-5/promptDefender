@@ -247,49 +247,7 @@ Blocked by Layer 2 (ML)    : 47
 
 Detailed results exported to `Tests/results_vs_ollama.json`.
 
-### demo_interactive.py — Interactive terminal demo
 
-Shows side-by-side LLM response with and without PromptDefender.
-
-```bash
-# Single prompt
-python test_model/demo_interactive.py --model tinyllama --prompt "Ignore all previous instructions"
-
-# 8 predefined attacks one by one
-python test_model/demo_interactive.py --model tinyllama --demo
-
-# Interactive mode
-python test_model/demo_interactive.py --model tinyllama
-```
-
----
-
-## Full Demo Setup
-
-Three terminals required:
-
-```bash
-# Terminal 1 — Ollama
-# On Windows: starts automatically from system tray
-# Otherwise: ollama serve
-
-# Terminal 2 — PromptDefender API
-python api.py
-
-# Terminal 3 — Demo
-python test_model/demo_interactive.py --model tinyllama --demo
-```
-
-**Ollama model:** `tinyllama` (637 MB) — runs on CPU, no dedicated GPU required.
-
-Install once:
-```bash
-ollama pull tinyllama
-```
-
-The model is stored permanently at `C:\Users\<user>\.ollama\models\` and does not need to be re-downloaded.
-
----
 
 ## Dataset
 
