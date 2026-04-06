@@ -30,12 +30,11 @@ promptDefender/
 ├── api.py                              ← Flask orchestrator :5000
 │
 └── Tests/
-──  ├──data/
+──  ├── data/
     │ └── Prompt_INJECTION_And_Benign_DATASET.jsonl
-    ├── test2.py                       ← Batch test of second layer on local JSONL dataset
-    ├──errors.jsonl     
-    ├──test1.ipynb                     ← Batch test of second layer on local JSONL dataset
-    └── /test_model
+    ├── test2.py                       ← Batch test of second layer on local JSONL dataset    
+    ├── test1.ipynb                     ← Batch test of second layer on local JSONL dataset
+    └── test_model/
         ├── test_vs_ollama.py          ← Benchmark with/without PromptDefender vs Ollama
         └──results_vs_ollama.json      ← Generated after test_vs_ollama.py
 ```
@@ -221,6 +220,8 @@ python Tests/test2.py
 | Accuracy | 0.8640 |
 | TP / FP / FN / TN | 248 / 66 / 2 / 184 |
 
+
+
 ### test_vs_ollama.py — Benchmark vs vulnerable LLM
 
 Compares LLM behavior **with and without PromptDefender** in front of Ollama.
@@ -245,14 +246,14 @@ Blocked by Layer 1 (Regex) : 2
 Blocked by Layer 2 (ML)    : 47
 ```
 
-Detailed results exported to `Tests/results_vs_ollama.json`.
+Detailed results exported to `Tests/test_model/results_vs_ollama.json`.
 
 
 
 ## Dataset
 
-**Location:** `test_model/Tests/data/Prompt_INJECTION_And_Benign_DATASET.jsonl`
+**Location:** `Tests/data/Prompt_INJECTION_And_Benign_DATASET.jsonl`
 
-Contains benign prompts, prompt injection examples, and expected labels (`benign` / `injection` / `malicious`).
+Contains benign prompts, prompt injection examples, and expected labels (`benign` / `malicious`).
 
-Errors and flagged prompts: `test_model/Tests/errors.jsonl`
+
