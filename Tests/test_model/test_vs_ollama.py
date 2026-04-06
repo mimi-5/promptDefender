@@ -215,7 +215,7 @@ def main():
         print(f"    Faux positifs (bloqués à tort) : {fp_count} / {len(benign)}")
 
     # ─── Export JSON ──────────────────────────────────────────────────────────
-    out_path = Path("Tests/results_vs_ollama.json")
+    out_path = Path("Tests/test_model/results_vs_ollama.json")
     out_path.parent.mkdir(exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(records, f, ensure_ascii=False, indent=2)
