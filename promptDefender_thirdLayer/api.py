@@ -18,7 +18,7 @@ from flask import Flask, jsonify, request
 
 from promptDefender_firstLayer.detector import PromptInjectionDetector
 from promptDefender_secondLayer.ml_detector2 import MLDetector
-from promptDefender_thirdLayer.llm_detector import LLMDetector
+from promptDefender_thirdLayer.Transformer_detector import LLMDetector
 
 app = Flask(__name__)
 

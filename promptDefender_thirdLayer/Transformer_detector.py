@@ -23,17 +23,17 @@ from transformers import XLMRobertaForSequenceClassification, AutoTokenizer
 # Paths
 # ---------------------------------------------------------------------------
 _BASE_DIR      = os.path.dirname(os.path.abspath(__file__))
-_ARTIFACTS_DIR = os.path.join(_BASE_DIR, "llm_artifacts")
+_ARTIFACTS_DIR = os.path.join(_BASE_DIR, "transformer_artifacts")
 _META_PATH     = os.path.join(_ARTIFACTS_DIR, "model_meta.json")
 
 
-class LLMDetector:
+class TransformerDetector:
     """
     Wraps a fine-tuned XLM-RoBERTa sequence classifier.
 
     Usage
     -----
-    detector = LLMDetector()
+    detector = TransformerDetector()
     result   = detector.predict("Ignore all previous instructions …")
     # → {"is_injection": True, "confidence": 0.97, "threshold": 0.5, "elapsed_ms": 38.2}
     """

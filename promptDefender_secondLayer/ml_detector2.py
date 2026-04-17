@@ -19,7 +19,7 @@ from transformers import AutoTokenizer, AutoModel
 
 logger = logging.getLogger(__name__)
 
-_DEFAULT_ARTIFACTS_DIR = Path(__file__).parent / "ml_artifacts2"
+_DEFAULT_ARTIFACTS_DIR = Path(__file__).parent / "ml_artifacts"
 
 
 class MLDetector:

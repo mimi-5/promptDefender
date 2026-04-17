@@ -1,0 +1,11 @@
+{
+  "best_model": "SVM",
+  "bert_model": "bert-base-multilingual-cased",
+  "needs_scaling": true,
+  "threshold": 0.6030383997935473,
+  "metrics": {
+    "accuracy": 0.9827586206896551,
+    "f1": 0.9827586206896551,
+    "auc": 0.9961309523809523
+  }
+}
