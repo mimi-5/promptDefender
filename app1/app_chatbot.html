@@ -26,6 +26,7 @@
     --success-bg: #0a1a0f;
     --layer1: #7c3aed;
     --layer2: #0ea5e9;
+    --layer3: #f59e0b;
     --mono: 'JetBrains Mono', monospace;
     --display: 'Syne', sans-serif;
   }
@@ -76,9 +77,10 @@
     color: var(--accent);
   }
   .status-dots { display: flex; gap: 8px; align-items: center; }
-  .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
   .dot-l1 { background: var(--layer1); box-shadow: 0 0 6px var(--layer1); }
   .dot-l2 { background: var(--layer2); box-shadow: 0 0 6px var(--layer2); }
+  .dot-l3 { background: var(--layer3); box-shadow: 0 0 6px var(--layer3); }
   .dot-label { font-size: 11px; color: var(--text-muted); }
 
   /* ── LAYOUT ── */
@@ -133,23 +135,16 @@
     font-size: 20px; font-weight: 700;
     color: var(--text);
   }
-  .welcome p { font-size: 12px; color: var(--text-muted); line-height: 1.6; max-width: 320px; }
-  .layer-badges { display: flex; gap: 8px; }
+  .welcome p { font-size: 12px; color: var(--text-muted); line-height: 1.6; max-width: 360px; }
+  .layer-badges { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
   .lbadge {
     font-size: 10px; padding: 4px 10px;
     border-radius: 20px; font-weight: 600;
     letter-spacing: 0.05em;
   }
-  .lbadge-1 {
-    background: rgba(124,58,237,0.15);
-    border: 1px solid rgba(124,58,237,0.3);
-    color: #a78bfa;
-  }
-  .lbadge-2 {
-    background: rgba(14,165,233,0.15);
-    border: 1px solid rgba(14,165,233,0.3);
-    color: var(--layer2);
-  }
+  .lbadge-1 { background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.3); color: #a78bfa; }
+  .lbadge-2 { background: rgba(14,165,233,0.15); border: 1px solid rgba(14,165,233,0.3); color: var(--layer2); }
+  .lbadge-3 { background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.3); color: var(--layer3); }
 
   /* Messages */
   .msg { display: flex; flex-direction: column; gap: 8px; animation: fadeUp 0.25s ease; }
@@ -162,9 +157,9 @@
     font-size: 11px; font-weight: 700;
     letter-spacing: 0.08em; text-transform: uppercase;
   }
-  .msg-role.user { color: var(--accent); }
+  .msg-role.user      { color: var(--accent); }
   .msg-role.assistant { color: var(--success); }
-  .msg-role.system { color: var(--warn); }
+  .msg-role.system    { color: var(--warn); }
   .msg-time { font-size: 10px; color: var(--text-dim); }
   .msg-body {
     font-size: 13.5px; line-height: 1.7;
@@ -173,19 +168,10 @@
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 12px 16px;
-    position: relative;
+    white-space: pre-wrap;
+    word-break: break-word;
   }
-  .msg-body.user { border-color: rgba(0,212,255,0.15); background: rgba(0,212,255,0.04); }
-  .msg-body.blocked {
-    border-color: var(--danger-border);
-    background: var(--danger-bg);
-    color: #fca5a5;
-  }
-  .msg-body.blocked::before {
-    content: '⛔';
-    position: absolute; top: 10px; right: 12px;
-    font-size: 16px;
-  }
+  .msg-body.user      { border-color: rgba(0,212,255,0.15); background: rgba(0,212,255,0.04); }
   .msg-body.assistant { border-color: rgba(46,213,115,0.15); background: rgba(46,213,115,0.03); }
 
   /* Block alert */
@@ -209,6 +195,7 @@
   }
   .block-layer.l1 { background: rgba(124,58,237,0.2); border: 1px solid rgba(124,58,237,0.3); color: #a78bfa; }
   .block-layer.l2 { background: rgba(14,165,233,0.2); border: 1px solid rgba(14,165,233,0.3); color: var(--layer2); }
+  .block-layer.l3 { background: rgba(245,158,11,0.2); border: 1px solid rgba(245,158,11,0.3); color: var(--layer3); }
 
   /* Thinking */
   .thinking { display: flex; align-items: center; gap: 8px; padding: 10px 0; }
@@ -222,7 +209,7 @@
   .thinking-dots span:nth-child(3) { animation-delay: 0.4s; }
   @keyframes blink {
     0%, 80%, 100% { opacity: 0.2; }
-    40% { opacity: 1; }
+    40%           { opacity: 1; }
   }
   .thinking-label { font-size: 11px; color: var(--text-muted); }
 
@@ -233,9 +220,7 @@
     border-top: 1px solid var(--border);
     flex-shrink: 0;
   }
-  .input-row {
-    display: flex; gap: 10px; align-items: flex-end;
-  }
+  .input-row { display: flex; gap: 10px; align-items: flex-end; }
   .input-wrap {
     flex: 1;
     background: var(--bg);
@@ -243,36 +228,23 @@
     border-radius: 8px;
     padding: 12px 14px;
     transition: border-color 0.2s;
-    position: relative;
   }
   .input-wrap:focus-within { border-color: var(--accent2); }
   textarea {
-    width: 100%;
-    background: transparent;
-    border: none;
-    outline: none;
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 13px;
-    line-height: 1.6;
-    resize: none;
-    min-height: 40px;
-    max-height: 120px;
+    width: 100%; background: transparent; border: none; outline: none;
+    color: var(--text); font-family: var(--mono); font-size: 13px;
+    line-height: 1.6; resize: none; min-height: 40px; max-height: 120px;
   }
   textarea::placeholder { color: var(--text-dim); }
-  .input-hint {
-    font-size: 10px; color: var(--text-dim); margin-top: 5px;
-  }
+  .input-hint { font-size: 10px; color: var(--text-dim); margin-top: 5px; }
   .send-btn {
     width: 44px; height: 44px;
-    background: var(--accent2);
-    border: none; border-radius: 8px;
+    background: var(--accent2); border: none; border-radius: 8px;
     cursor: pointer; display: flex; align-items: center; justify-content: center;
-    transition: all 0.15s; flex-shrink: 0;
-    font-size: 16px;
+    transition: all 0.15s; flex-shrink: 0; font-size: 16px;
   }
-  .send-btn:hover { background: var(--accent); transform: translateY(-1px); }
-  .send-btn:active { transform: translateY(0); }
+  .send-btn:hover    { background: var(--accent); transform: translateY(-1px); }
+  .send-btn:active   { transform: translateY(0); }
   .send-btn:disabled { background: var(--border2); cursor: not-allowed; transform: none; }
 
   /* ── SIDEBAR ── */
@@ -281,7 +253,6 @@
     display: flex; flex-direction: column;
     overflow: hidden;
   }
-
   .sidebar-section {
     border-bottom: 1px solid var(--border);
     padding: 16px;
@@ -293,111 +264,78 @@
     display: flex; align-items: center; gap: 6px;
   }
   .sidebar-title::before {
-    content: '';
-    display: inline-block;
-    width: 3px; height: 12px;
-    border-radius: 2px;
+    content: ''; display: inline-block;
+    width: 3px; height: 12px; border-radius: 2px;
   }
-  .sidebar-title.l1::before { background: var(--layer1); }
-  .sidebar-title.l2::before { background: var(--layer2); }
+  .sidebar-title.l1::before      { background: var(--layer1); }
+  .sidebar-title.l2::before      { background: var(--layer2); }
+  .sidebar-title.l3::before      { background: var(--layer3); }
   .sidebar-title.verdict::before { background: var(--accent); }
 
   /* Verdict card */
   .verdict-card {
-    border-radius: 8px;
-    padding: 12px 14px;
-    border: 1px solid var(--border);
-    background: var(--surface2);
-    display: flex; flex-direction: column; gap: 8px;
-    transition: all 0.3s;
+    border-radius: 8px; padding: 12px 14px;
+    border: 1px solid var(--border); background: var(--surface2);
+    display: flex; flex-direction: column; gap: 8px; transition: all 0.3s;
   }
-  .verdict-card.blocked {
-    border-color: var(--danger-border);
-    background: var(--danger-bg);
-  }
-  .verdict-card.allowed {
-    border-color: rgba(46,213,115,0.15);
-    background: var(--success-bg);
-  }
+  .verdict-card.blocked { border-color: var(--danger-border); background: var(--danger-bg); }
+  .verdict-card.allowed { border-color: rgba(46,213,115,0.15); background: var(--success-bg); }
   .verdict-label {
     font-size: 20px; font-weight: 800;
     font-family: var(--display); letter-spacing: -0.5px;
   }
   .verdict-label.blocked { color: var(--danger); }
   .verdict-label.allowed { color: var(--success); }
-  .verdict-label.idle { color: var(--text-dim); font-size: 14px; font-family: var(--mono); font-weight: 400; }
+  .verdict-label.idle    { color: var(--text-dim); font-size: 14px; font-family: var(--mono); font-weight: 400; }
   .verdict-meta { font-size: 11px; color: var(--text-muted); line-height: 1.5; }
 
   /* Layer detail */
-  .layer-detail {
-    display: flex; flex-direction: column; gap: 6px;
-  }
+  .layer-detail { display: flex; flex-direction: column; gap: 6px; }
   .layer-row {
     display: flex; align-items: center; justify-content: space-between;
-    font-size: 11.5px;
-    padding: 6px 10px;
-    border-radius: 5px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
+    font-size: 11.5px; padding: 6px 10px;
+    border-radius: 5px; background: var(--surface2); border: 1px solid var(--border);
   }
   .layer-row-name { color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
   .layer-row-name .dot { width: 6px; height: 6px; border-radius: 50%; }
   .layer-row-val { font-weight: 600; font-size: 11px; }
   .val-blocked { color: var(--danger); }
-  .val-passed { color: var(--success); }
+  .val-passed  { color: var(--success); }
   .val-skipped { color: var(--text-dim); }
-  .val-na { color: var(--text-dim); }
+  .val-na      { color: var(--text-dim); }
 
   /* Confidence bar */
   .conf-row { display: flex; flex-direction: column; gap: 5px; }
   .conf-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); }
-  .conf-bar-bg {
-    height: 4px; border-radius: 2px;
-    background: var(--border2);
-    overflow: hidden;
-  }
+  .conf-bar-bg { height: 4px; border-radius: 2px; background: var(--border2); overflow: hidden; }
   .conf-bar-fill {
-    height: 100%; border-radius: 2px;
-    background: var(--layer2);
+    height: 100%; border-radius: 2px; background: var(--layer2);
     transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
   }
 
   /* Matches */
   .matches-list {
     display: flex; flex-direction: column; gap: 4px;
-    max-height: 180px; overflow-y: auto;
+    max-height: 120px; overflow-y: auto;
   }
   .matches-list::-webkit-scrollbar { width: 3px; }
   .matches-list::-webkit-scrollbar-thumb { background: var(--border2); }
   .match-item {
     font-size: 10px; color: #f87171;
-    background: rgba(255,71,87,0.07);
-    border: 1px solid rgba(255,71,87,0.15);
-    border-radius: 4px;
-    padding: 4px 8px;
-    font-family: var(--mono);
-    word-break: break-all;
-    line-height: 1.5;
+    background: rgba(255,71,87,0.07); border: 1px solid rgba(255,71,87,0.15);
+    border-radius: 4px; padding: 4px 8px; word-break: break-all; line-height: 1.5;
   }
-  .empty-state {
-    font-size: 11px; color: var(--text-dim);
-    text-align: center; padding: 12px;
-  }
+  .empty-state { font-size: 11px; color: var(--text-dim); text-align: center; padding: 12px; }
 
   /* Stats */
-  .stats-grid {
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 6px;
-  }
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
   .stat-cell {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 10px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 6px; padding: 10px;
     display: flex; flex-direction: column; gap: 2px;
   }
-  .stat-val { font-family: var(--display); font-size: 22px; font-weight: 800; }
-  .stat-val.danger { color: var(--danger); }
+  .stat-val { font-family: var(--display); font-size: 20px; font-weight: 800; }
+  .stat-val.danger  { color: var(--danger); }
   .stat-val.success { color: var(--success); }
   .stat-val.neutral { color: var(--accent); }
   .stat-key { font-size: 10px; color: var(--text-muted); letter-spacing: 0.05em; }
@@ -411,33 +349,22 @@
   .api-config { padding: 16px; }
   .api-label { font-size: 10px; color: var(--text-muted); margin-bottom: 5px; }
   .api-input {
-    width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--border2);
-    border-radius: 5px;
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 11px;
-    padding: 7px 10px;
-    outline: none;
-    transition: border-color 0.2s;
+    width: 100%; background: var(--bg); border: 1px solid var(--border2);
+    border-radius: 5px; color: var(--text); font-family: var(--mono);
+    font-size: 11px; padding: 7px 10px; outline: none; transition: border-color 0.2s;
   }
   .api-input:focus { border-color: var(--accent2); }
 
   /* Mode toggle */
   .mode-toggle {
-    display: flex; gap: 0;
-    background: var(--bg);
-    border: 1px solid var(--border2);
-    border-radius: 6px; overflow: hidden;
-    margin-top: 10px;
+    display: flex; background: var(--bg);
+    border: 1px solid var(--border2); border-radius: 6px; overflow: hidden; margin-top: 10px;
   }
   .mode-btn {
     flex: 1; padding: 6px; font-size: 11px;
     font-family: var(--mono); font-weight: 600;
     background: none; border: none; cursor: pointer;
-    color: var(--text-muted); transition: all 0.2s;
-    letter-spacing: 0.03em;
+    color: var(--text-muted); transition: all 0.2s; letter-spacing: 0.03em;
   }
   .mode-btn.active { background: var(--accent2); color: #000; }
 
@@ -445,12 +372,10 @@
   .elapsed-row {
     display: flex; align-items: center; justify-content: space-between;
     font-size: 11px; padding: 8px 0 4px;
-    border-top: 1px solid var(--border);
-    color: var(--text-muted);
+    border-top: 1px solid var(--border); color: var(--text-muted);
   }
   .elapsed-val { color: var(--accent); font-weight: 600; }
 
-  /* Responsive scroll for main messages */
   @media (max-width: 768px) {
     .main { grid-template-columns: 1fr; }
     .sidebar { display: none; }
@@ -468,9 +393,12 @@
   <div class="status-dots">
     <div class="dot dot-l1"></div>
     <span class="dot-label">L1 Regex</span>
-    <div style="width:8px"></div>
+    <div style="width:6px"></div>
     <div class="dot dot-l2"></div>
     <span class="dot-label">L2 ML</span>
+    <div style="width:6px"></div>
+    <div class="dot dot-l3"></div>
+    <span class="dot-label">L3 XLM-R</span>
   </div>
 </div>
 
@@ -485,9 +413,10 @@
         <div class="layer-badges">
           <span class="lbadge lbadge-1">Layer 1 — Regex</span>
           <span class="lbadge lbadge-2">Layer 2 — BERT ML</span>
+          <span class="lbadge lbadge-3">Layer 3 — XLM-RoBERTa</span>
         </div>
         <h2>Secure LLM Chat Interface</h2>
-        <p>Chaque message transite par le moteur PromptDefender avant d'atteindre le LLM. Les injections sont détectées et bloquées en temps réel.</p>
+        <p>Chaque message transite par les 3 couches de PromptDefender avant d'atteindre le LLM. Les injections sont détectées et bloquées en temps réel.</p>
       </div>
     </div>
 
@@ -498,13 +427,11 @@
             id="promptInput"
             placeholder="Écrivez votre message… (Shift+Enter pour nouvelle ligne)"
             rows="1"
-            onInput="autoResize(this)"
+            oninput="autoResize(this)"
           ></textarea>
           <div class="input-hint">Enter pour envoyer · Shift+Enter pour nouvelle ligne</div>
         </div>
-        <button class="send-btn" id="sendBtn" onclick="sendMessage()" title="Envoyer">
-          ➤
-        </button>
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()" title="Envoyer">➤</button>
       </div>
     </div>
   </div>
@@ -516,7 +443,7 @@
     <div class="api-config">
       <div class="api-label">API Endpoint</div>
       <input class="api-input" id="apiUrl" value="http://localhost:5001" placeholder="http://localhost:5001">
-      <div class="mode-toggle" style="margin-top:8px">
+      <div class="mode-toggle">
         <button class="mode-btn active" id="modeDefend" onclick="setMode('defend')">🛡 Défense</button>
         <button class="mode-btn" id="modeDebug" onclick="setMode('debug')">🔬 Debug</button>
       </div>
@@ -581,13 +508,41 @@
             <span class="layer-row-val" id="l2threshold"><span class="val-na">—</span></span>
           </div>
         </div>
-        <div class="conf-row" style="margin-top:10px" id="confRow">
+        <div class="conf-row" style="margin-top:10px">
           <div class="conf-label">
             <span>Confiance d'injection</span>
             <span id="confPct">—</span>
           </div>
           <div class="conf-bar-bg">
             <div class="conf-bar-fill" id="confBar" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Layer 3 -->
+      <div class="sidebar-section">
+        <div class="sidebar-title l3">Couche 3 — XLM-RoBERTa</div>
+        <div class="layer-detail">
+          <div class="layer-row">
+            <div class="layer-row-name"><div class="dot" style="background:var(--layer3)"></div>Résultat</div>
+            <span class="layer-row-val" id="l3result"><span class="val-na">—</span></span>
+          </div>
+          <div class="layer-row">
+            <div class="layer-row-name"><div class="dot" style="background:var(--layer3)"></div>Seuil</div>
+            <span class="layer-row-val" id="l3threshold"><span class="val-na">—</span></span>
+          </div>
+          <div class="layer-row">
+            <div class="layer-row-name"><div class="dot" style="background:var(--layer3)"></div>Temps</div>
+            <span class="layer-row-val" id="l3elapsed"><span class="val-na">—</span></span>
+          </div>
+        </div>
+        <div class="conf-row" style="margin-top:10px">
+          <div class="conf-label">
+            <span>Confiance XLM-RoBERTa</span>
+            <span id="l3confPct">—</span>
+          </div>
+          <div class="conf-bar-bg">
+            <div class="conf-bar-fill" id="l3confBar" style="width:0%; background:var(--layer3)"></div>
           </div>
         </div>
       </div>
@@ -612,27 +567,32 @@
             <div class="stat-val" id="statL2" style="color:var(--layer2)">0</div>
             <div class="stat-key">Layer 2</div>
           </div>
+          <div class="stat-cell">
+            <div class="stat-val" id="statL3" style="color:var(--layer3)">0</div>
+            <div class="stat-key">Layer 3</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-val success" id="statAllowed">0</div>
+            <div class="stat-key">Autorisés</div>
+          </div>
         </div>
       </div>
 
-    </div>
-  </div>
-</div>
+    </div><!-- end sidebar-scroll -->
+  </div><!-- end sidebar -->
+</div><!-- end main -->
 
 <script>
 // ── State ──────────────────────────────────────────────────────────────────
-let mode = 'defend';
-let stats = { total: 0, blocked: 0, l1: 0, l2: 0 };
+let mode  = 'defend';
+let stats = { total: 0, blocked: 0, allowed: 0, l1: 0, l2: 0, l3: 0 };
 
-// ── Auto-détection du serveur au démarrage ─────────────────────────────────
+// ── Auto-détection du serveur ──────────────────────────────────────────────
 async function autoDetectServer() {
-  // Page servie par Flask → utiliser window.location directement
   if (window.location.protocol !== 'file:' && window.location.port) {
-    const autoUrl = window.location.origin;
-    document.getElementById('apiUrl').value = autoUrl;
+    document.getElementById('apiUrl').value = window.location.origin;
     return;
   }
-  // Ouvert en file:// → tester 5001 puis 5000
   for (const port of [5001, 5000]) {
     try {
       const r = await fetch('http://localhost:' + port + '/health',
@@ -659,17 +619,14 @@ function autoResize(el) {
   el.style.height = Math.min(el.scrollHeight, 120) + 'px';
 }
 
-// ── Key handler ────────────────────────────────────────────────────────────
 document.getElementById('promptInput').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    sendMessage();
-  }
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
 });
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 function now() {
-  return new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  return new Date().toLocaleTimeString('fr-FR',
+    { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 }
 
 function scrollDown() {
@@ -682,23 +639,34 @@ function removeWelcome() {
   if (w) w.remove();
 }
 
-function appendMsg(role, content, extraClass = '') {
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function appendMsg(role, content) {
   const div = document.createElement('div');
   div.className = 'msg';
-  const roleLabel = { user: 'USER', assistant: 'LLM', system: 'SYSTÈME' }[role] || role;
+  const labels = { user: 'USER', assistant: 'LLM', system: 'SYSTÈME' };
   div.innerHTML = `
     <div class="msg-header">
-      <span class="msg-role ${role}">${roleLabel}</span>
+      <span class="msg-role ${role}">${labels[role] || role}</span>
       <span class="msg-time">${now()}</span>
     </div>
-    <div class="msg-body ${role} ${extraClass}">${escapeHtml(content)}</div>
+    <div class="msg-body ${role}">${escapeHtml(content)}</div>
   `;
   document.getElementById('messages').appendChild(div);
   scrollDown();
-  return div;
 }
 
-function appendBlockedMsg(prompt, reason, layer) {
+function appendBlockedMsg(prompt, reason, blockedBy) {
+  const layerClass = blockedBy?.includes('layer1') ? 'l1'
+                   : blockedBy?.includes('layer2') ? 'l2' : 'l3';
+  const layerLabel = blockedBy?.includes('layer1') ? 'LAYER 1 — REGEX'
+                   : blockedBy?.includes('layer2') ? 'LAYER 2 — ML'
+                   : 'LAYER 3 — XLM-ROBERTA';
   const div = document.createElement('div');
   div.className = 'msg';
   div.innerHTML = `
@@ -710,7 +678,7 @@ function appendBlockedMsg(prompt, reason, layer) {
     <div class="block-alert">
       <div class="block-title">
         ⛔ PROMPT INJECTION BLOQUÉE
-        <span class="block-layer ${layer}">${layer.toUpperCase()}</span>
+        <span class="block-layer ${layerClass}">${layerLabel}</span>
       </div>
       <div class="block-reason">${escapeHtml(reason)}</div>
     </div>
@@ -721,8 +689,7 @@ function appendBlockedMsg(prompt, reason, layer) {
 
 function appendThinking() {
   const div = document.createElement('div');
-  div.className = 'msg';
-  div.id = 'thinking';
+  div.className = 'msg'; div.id = 'thinking';
   div.innerHTML = `
     <div class="msg-header">
       <span class="msg-role assistant">LLM</span>
@@ -741,95 +708,114 @@ function removeThinking() {
   if (t) t.remove();
 }
 
-function escapeHtml(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-}
-
 // ── Sidebar update ─────────────────────────────────────────────────────────
 function updateSidebar(data) {
-  const verdict = data.verdict;
-  const l1 = data.layer1 || {};
-  const l2 = data.layer2 || null;
-  const meta = data.metadata || {};
+  const verdict    = data.verdict;
+  const l1         = data.layer1 || {};
+  const l2         = data.layer2 || null;
+  const l3         = data.layer3 || null;
+  const meta       = data.metadata || {};
+  const blockedBy  = data.blocked_by || '';
 
-  // Verdict card
+  // ── Verdict card
   const card = document.getElementById('verdictCard');
-  card.className = 'verdict-card ' + (verdict === 'BLOCKED' ? 'blocked' : 'allowed');
+  const vClass = verdict === 'BLOCKED' ? 'blocked' : 'allowed';
+  const layerBadge = blockedBy
+    ? `<span class="block-layer ${blockedBy.includes('layer1') ? 'l1' : blockedBy.includes('layer2') ? 'l2' : 'l3'}">${escapeHtml(blockedBy)}</span>`
+    : '';
+  card.className = `verdict-card ${vClass}`;
   card.innerHTML = `
-    <div class="verdict-label ${verdict === 'BLOCKED' ? 'blocked' : 'allowed'}">${verdict}</div>
+    <div class="verdict-label ${vClass}">${verdict}</div>
     <div class="verdict-meta">${escapeHtml(data.reason || '')}</div>
-    ${data.blocked_by ? `<div class="block-layer ${data.blocked_by.includes('layer1') ? 'l1' : 'l2'}">${escapeHtml(data.blocked_by)}</div>` : ''}
+    ${layerBadge}
   `;
 
-  // Elapsed
-  if (meta.elapsed_ms !== undefined) {
+  // ── Elapsed
+  const elapsed = meta.elapsed_ms ?? meta.total_elapsed_ms;
+  if (elapsed !== undefined) {
     document.getElementById('elapsedRow').style.display = 'flex';
-    document.getElementById('elapsedVal').textContent = meta.elapsed_ms.toFixed(1) + ' ms';
+    document.getElementById('elapsedVal').textContent = Number(elapsed).toFixed(1) + ' ms';
   }
 
-  // Layer 1
+  // ── Layer 1
   document.getElementById('l1struct').innerHTML = boolBadge(l1.policy_like);
-  document.getElementById('l1mal').innerHTML = boolBadge(l1.malicious);
-  document.getElementById('l1score').innerHTML = `<span style="color:var(--warn);font-weight:700">${l1.malicious_score ?? '—'}</span>`;
+  document.getElementById('l1mal').innerHTML    = boolBadge(l1.malicious);
+  document.getElementById('l1score').innerHTML  =
+    `<span style="color:var(--warn);font-weight:700">${l1.malicious_score ?? '—'}</span>`;
 
-  // Matches
-  const mList = document.getElementById('matchesList');
+  // ── Matches
+  const mList   = document.getElementById('matchesList');
   const matches = (l1.matches && l1.matches.malicious) || [];
-  if (matches.length === 0) {
-    mList.innerHTML = '<div class="empty-state">Aucun pattern déclenché</div>';
-  } else {
-    mList.innerHTML = matches.map(m =>
-      `<div class="match-item">${escapeHtml(m.substring(0, 100))}${m.length > 100 ? '…' : ''}</div>`
-    ).join('');
-  }
+  mList.innerHTML = matches.length === 0
+    ? '<div class="empty-state">Aucun pattern déclenché</div>'
+    : matches.map(m =>
+        `<div class="match-item">${escapeHtml(m.substring(0, 100))}${m.length > 100 ? '…' : ''}</div>`
+      ).join('');
 
-  // Layer 2
+  // ── Layer 2
   if (l2) {
-    document.getElementById('l2model').innerHTML = `<span style="color:var(--layer2)">${escapeHtml(l2.model_used || '—')}</span>`;
+    document.getElementById('l2model').innerHTML =
+      `<span style="color:var(--layer2)">${escapeHtml(l2.model_used || '—')}</span>`;
     document.getElementById('l2label').innerHTML = l2.label === 'injection'
       ? '<span class="val-blocked">injection</span>'
       : '<span class="val-passed">benign</span>';
-    document.getElementById('l2threshold').innerHTML = `<span style="color:var(--text-muted)">${l2.threshold ?? '—'}</span>`;
+    document.getElementById('l2threshold').innerHTML =
+      `<span style="color:var(--text-muted)">${l2.threshold ?? '—'}</span>`;
     const pct = Math.round((l2.confidence || 0) * 100);
-    document.getElementById('confPct').textContent = pct + '%';
-    document.getElementById('confBar').style.width = pct + '%';
-    document.getElementById('confBar').style.background = pct > 80 ? 'var(--danger)' : pct > 50 ? 'var(--warn)' : 'var(--layer2)';
+    document.getElementById('confPct').textContent  = pct + '%';
+    document.getElementById('confBar').style.width  = pct + '%';
+    document.getElementById('confBar').style.background =
+      pct > 80 ? 'var(--danger)' : pct > 50 ? 'var(--warn)' : 'var(--layer2)';
   } else {
-    document.getElementById('l2model').innerHTML = '<span class="val-skipped">Skipped</span>';
-    document.getElementById('l2label').innerHTML = '<span class="val-skipped">—</span>';
+    document.getElementById('l2model').innerHTML     = '<span class="val-skipped">Skipped</span>';
+    document.getElementById('l2label').innerHTML     = '<span class="val-skipped">—</span>';
     document.getElementById('l2threshold').innerHTML = '<span class="val-skipped">—</span>';
-    document.getElementById('confPct').textContent = '—';
-    document.getElementById('confBar').style.width = '0%';
+    document.getElementById('confPct').textContent   = '—';
+    document.getElementById('confBar').style.width   = '0%';
   }
 
-  // Stats
-  document.getElementById('statTotal').textContent = stats.total;
+  // ── Layer 3
+  if (l3) {
+    document.getElementById('l3result').innerHTML = l3.is_injection
+      ? '<span class="val-blocked">INJECTION</span>'
+      : '<span class="val-passed">BENIGN</span>';
+    document.getElementById('l3threshold').innerHTML =
+      `<span style="color:var(--text-muted)">${l3.threshold != null ? Number(l3.threshold).toFixed(4) : '—'}</span>`;
+    document.getElementById('l3elapsed').innerHTML =
+      l3.elapsed_ms != null
+        ? `<span style="color:var(--layer3)">${Number(l3.elapsed_ms).toFixed(0)} ms</span>`
+        : '<span class="val-na">—</span>';
+    const pct3 = Math.round((l3.confidence || 0) * 100);
+    document.getElementById('l3confPct').textContent  = pct3 + '%';
+    document.getElementById('l3confBar').style.width  = pct3 + '%';
+    document.getElementById('l3confBar').style.background =
+      pct3 > 80 ? 'var(--danger)' : pct3 > 50 ? 'var(--warn)' : 'var(--layer3)';
+  } else {
+    document.getElementById('l3result').innerHTML    = '<span class="val-skipped">Skipped</span>';
+    document.getElementById('l3threshold').innerHTML = '<span class="val-skipped">—</span>';
+    document.getElementById('l3elapsed').innerHTML   = '<span class="val-na">—</span>';
+    document.getElementById('l3confPct').textContent = '—';
+    document.getElementById('l3confBar').style.width = '0%';
+  }
+
+  // ── Stats
+  document.getElementById('statTotal').textContent   = stats.total;
   document.getElementById('statBlocked').textContent = stats.blocked;
-  document.getElementById('statL1').textContent = stats.l1;
-  document.getElementById('statL2').textContent = stats.l2;
+  document.getElementById('statAllowed').textContent = stats.allowed;
+  document.getElementById('statL1').textContent      = stats.l1;
+  document.getElementById('statL2').textContent      = stats.l2;
+  document.getElementById('statL3').textContent      = stats.l3;
 }
 
 function boolBadge(val) {
-  if (val === true) return '<span class="val-blocked">OUI</span>';
+  if (val === true)  return '<span class="val-blocked">OUI</span>';
   if (val === false) return '<span class="val-passed">NON</span>';
   return '<span class="val-na">—</span>';
 }
 
-// ── Mock LLM response (fallback) ───────────────────────────────────────────
-function mockLLMResponse(prompt) {
-  const responses = [
-    "Bien sûr ! Je peux vous aider avec ça. Pouvez-vous me donner plus de détails ?",
-    "C'est une excellente question. Voici ce que je sais à ce sujet…",
-    "D'accord, voici ma réponse : la solution à ce problème implique plusieurs étapes.",
-    "Je comprends votre demande. Permettez-moi d'analyser cela attentivement.",
-    "Merci pour votre message. Voici les informations que vous cherchez.",
-  ];
-  return responses[Math.floor(Math.random() * responses.length)];
-}
-
 // ── Main send ──────────────────────────────────────────────────────────────
 async function sendMessage() {
-  const input = document.getElementById('promptInput');
+  const input  = document.getElementById('promptInput');
   const prompt = input.value.trim();
   if (!prompt) return;
 
@@ -843,7 +829,7 @@ async function sendMessage() {
 
   const apiBase = document.getElementById('apiUrl').value.trim().replace(/\/$/, '');
 
-  // ── MODE DEBUG : couche 1 seule ─────────────────────────────────────────
+  // ── MODE DEBUG ──────────────────────────────────────────────────────────
   if (mode === 'debug') {
     try {
       const res  = await fetch(`${apiBase}/layer1`, {
@@ -859,10 +845,12 @@ async function sendMessage() {
         blocked_by: data.is_puppetry ? 'layer1_regex' : null,
         layer1: { ...data, matches: { malicious: data.malicious_matches || [] } },
         layer2: null,
+        layer3: null,
         metadata: { elapsed_ms: 0 }
       };
       appendMsg('user', prompt);
-      appendMsg('system', `[DEBUG L1] structure=${data.policy_like} | malicious=${data.malicious} | score=${data.malicious_score}`);
+      appendMsg('system',
+        `[DEBUG L1] structure=${data.policy_like} | malicious=${data.malicious} | score=${data.malicious_score}`);
       updateSidebar(debugData);
     } catch (err) {
       removeThinking();
@@ -872,27 +860,25 @@ async function sendMessage() {
     return;
   }
 
-  // ── MODE DEFEND : pipeline complet via /chat ─────────────────────────────
+  // ── MODE DEFEND ─────────────────────────────────────────────────────────
   try {
-    const res = await fetch(`${apiBase}/chat`, {
+    const res  = await fetch(`${apiBase}/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ prompt }),
     });
-
-    // /chat retourne 200 si ALLOWED, 403 si BLOCKED — les deux ont un JSON valide
     const data = await res.json();
     removeThinking();
-
     updateSidebar(data);
 
     if (data.verdict === 'BLOCKED') {
       stats.blocked++;
-      if (data.blocked_by && data.blocked_by.includes('layer1')) stats.l1++;
-      else stats.l2++;
-      appendBlockedMsg(prompt, data.reason, data.blocked_by?.includes('layer1') ? 'l1' : 'l2');
+      if (data.blocked_by?.includes('layer1'))      stats.l1++;
+      else if (data.blocked_by?.includes('layer2')) stats.l2++;
+      else                                           stats.l3++;
+      appendBlockedMsg(prompt, data.reason, data.blocked_by);
     } else {
-      // ALLOWED — la réponse LLM est déjà dans data.response (app_chat.py l'a générée)
+      stats.allowed++;
       appendMsg('user', prompt);
       appendMsg('assistant', data.response || '(pas de réponse LLM)');
     }
@@ -906,7 +892,7 @@ async function sendMessage() {
   document.getElementById('sendBtn').disabled = false;
 }
 
-// ── Affiche un message d'erreur détaillé ────────────────────────────────────
+// ── Error message ──────────────────────────────────────────────────────────
 function appendApiError(prompt, err, apiBase) {
   appendMsg('user', prompt);
   const errDiv = document.createElement('div');
@@ -920,47 +906,35 @@ function appendApiError(prompt, err, apiBase) {
       <strong>⚠ Serveur inaccessible sur ${escapeHtml(apiBase)}</strong><br><br>
       <strong>Erreur :</strong> ${escapeHtml(err.message)}<br><br>
       <strong>Pour corriger :</strong><br>
-      1. Ouvre un PowerShell dans VS Code (Terminal → New Terminal)<br>
-      2. Tape ces commandes :<br>
-      &nbsp;&nbsp;<code style="background:#0a0c0f;padding:2px 8px;border-radius:3px;color:#00d4ff">cd D:\mini_projet\promptDefender</code><br>
-      &nbsp;&nbsp;<code style="background:#0a0c0f;padding:2px 8px;border-radius:3px;color:#00d4ff">python app/app_chat.py</code><br><br>
-      3. Puis ouvre dans le navigateur :<br>
-      &nbsp;&nbsp;<a href="http://localhost:5001" target="_blank" style="color:#00d4ff">http://localhost:5001</a><br><br>
-      <em style="color:#64748b;font-size:11px">Ne jamais ouvrir app_chatbot.html par double-clic — toujours passer par le serveur Flask.</em>
+      1. Terminal 1 : <code style="background:#0a0c0f;padding:2px 6px;border-radius:3px;color:#00d4ff">python api.py</code><br>
+      2. Terminal 2 : <code style="background:#0a0c0f;padding:2px 6px;border-radius:3px;color:#00d4ff">ollama serve</code><br>
+      3. Terminal 3 : <code style="background:#0a0c0f;padding:2px 6px;border-radius:3px;color:#00d4ff">python app/app_chat.py</code><br><br>
+      <a href="http://localhost:5001" target="_blank" style="color:#00d4ff">http://localhost:5001</a>
     </div>
   `;
   document.getElementById('messages').appendChild(errDiv);
   scrollDown();
 }
 
-function updateStats(data) {
-  document.getElementById('statTotal').textContent = stats.total;
-  document.getElementById('statBlocked').textContent = stats.blocked;
-  document.getElementById('statL1').textContent = stats.l1;
-  document.getElementById('statL2').textContent = stats.l2;
-}
-
 // ── Offline simulation ─────────────────────────────────────────────────────
 function simulateAnalysis(prompt) {
-  const injKeywords = ['ignore', 'bypass', 'jailbreak', 'system', 'override', 'rm -rf', 'sudo', 'admin', 'root', 'eval'];
-  const lower = prompt.toLowerCase();
-  const hasInj = injKeywords.some(k => lower.includes(k));
+  const lower   = prompt.toLowerCase();
+  const injKeys = ['ignore', 'bypass', 'jailbreak', 'system', 'override', 'sudo', 'eval'];
+  const hasInj  = injKeys.some(k => lower.includes(k));
   return {
-    verdict: hasInj ? 'BLOCKED' : 'ALLOWED',
-    reason: hasInj ? '[SIMULATION] Pattern suspect détecté' : '[SIMULATION] Aucune menace détectée',
+    verdict:    hasInj ? 'BLOCKED' : 'ALLOWED',
+    reason:     hasInj ? '[SIM] Pattern suspect' : '[SIM] Aucune menace',
     blocked_by: hasInj ? 'layer1_regex' : null,
     layer1: {
-      policy_like: hasInj,
-      malicious: hasInj,
-      is_puppetry: hasInj,
+      policy_like: hasInj, malicious: hasInj, is_puppetry: hasInj,
       malicious_score: hasInj ? 1 : 0,
-      matches: { malicious: hasInj ? ['[simulation] keyword match'] : [] }
+      matches: { malicious: hasInj ? ['[simulation]'] : [] }
     },
-    layer2: !hasInj ? { model_used: 'SVM [sim]', label: 'benign', confidence: 0.12, threshold: 0.5 } : null,
-    metadata: { elapsed_ms: 3.2, layer2_triggered: !hasInj }
+    layer2: !hasInj ? { model_used:'SVM[sim]', label:'benign', confidence:0.12, threshold:0.5 } : null,
+    layer3: null,
+    metadata: { elapsed_ms: 2.1, layer2_triggered: !hasInj, layer3_triggered: false }
   };
 }
 </script>
-
 </body>
 </html>
