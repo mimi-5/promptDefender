@@ -39,13 +39,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-
-
 app = Flask(__name__)
 
-@app.route("/")
-def home():
-    return {"status": "API is running"}
 # ─── Initialisation des détecteurs ───────────────────────────────────────────
 logger.info("Chargement de la couche 1 (regex)…")
 layer1 = PromptInjectionDetector()

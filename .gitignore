@@ -94,3 +94,5 @@ dmypy.json
 *.bak
 *.tmp
 *.temp 
+promptDefender_thirdLayer/transformer_artifacts/model.safetensors
+promptDefender_thirdLayer/transformer_artifacts/tokenizer.json
