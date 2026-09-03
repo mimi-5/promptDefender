@@ -61,7 +61,7 @@ Install the dependencies:
 pip install -r requirements.txt
 ```
 
-> If `requirements.txt` isn't in the repo yet, install manually: `flask`, `flask-cors`, `transformers`, `torch`, `scikit-learn`, `joblib`.
+
 
 Download the required Ollama models:
 
