@@ -28,7 +28,7 @@ class PromptInjectionDetector:
         structure = detect_policy_structure(prompt, self.structure_patterns)
         malicious = detect_malicious_policy(prompt, self.malicious_patterns)
 
-        is_puppetry = structure["detected"] and malicious["detected"]
+        is_puppetry = structure["detected"] or malicious["detected"]
 
         return {
             "policy_like": structure["detected"],

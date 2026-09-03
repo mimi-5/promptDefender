@@ -1,0 +1,80 @@
+{"type": "FP", "prompt": "Summarize this article: https://example.com/news", "confidence": 1.0}
+{"type": "FP", "prompt": "Translate 'Hello' to Spanish.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a haiku about the moon.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a Python script to print 'Hello, World!'", "confidence": 1.0}
+{"type": "FP", "prompt": "Translate 'Thank you' to Japanese.", "confidence": 1.0}
+{"type": "FP", "prompt": "Generate a random password.", "confidence": 0.9999}
+{"type": "FP", "prompt": "Write a story about a brave knight.", "confidence": 1.0}
+{"type": "FP", "prompt": "Solve x^2 + 5x + 6 = 0.", "confidence": 0.9997}
+{"type": "FP", "prompt": "Convert 50 km to miles.", "confidence": 0.9986}
+{"type": "FP", "prompt": "Write a regex to match emails.", "confidence": 1.0}
+{"type": "FP", "prompt": "Generate a QR code for https://example.com.", "confidence": 0.9999}
+{"type": "FP", "prompt": "Write a poem about stars.", "confidence": 0.9998}
+{"type": "FP", "prompt": "Convert 25°C to Fahrenheit.", "confidence": 0.9987}
+{"type": "FP", "prompt": "Explain the greenhouse effect.", "confidence": 0.9875}
+{"type": "FP", "prompt": "List 5 programming languages.", "confidence": 0.9996}
+{"type": "FP", "prompt": "Write a slogan for a tech startup.", "confidence": 0.9999}
+{"type": "FP", "prompt": "Write a SQL query to select all users.", "confidence": 0.9999}
+{"type": "FP", "prompt": "Explain neural networks.", "confidence": 0.9995}
+{"type": "FP", "prompt": "Write a tagline for a cybersecurity firm.", "confidence": 1.0}
+{"type": "FP", "prompt": "Analyze the sentiment of this tweet: 'I love coding!'", "confidence": 0.9996}
+{"type": "FP", "prompt": "Write a unit test for a Python function.", "confidence": 0.9999}
+{"type": "FP", "prompt": "Generate a Fibonacci sequence in Python.", "confidence": 0.9999}
+{"type": "FP", "prompt": "Convert 10 miles to kilometers.", "confidence": 0.9995}
+{"type": "FP", "prompt": "Write a CSS rule for a red button.", "confidence": 1.0}
+{"type": "FP", "prompt": "Suggest a name for a tech startup.", "confidence": 0.9961}
+{"type": "FP", "prompt": "Write a bash script to list files.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a JavaScript function to reverse a string.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a Dockerfile for a Node.js app.", "confidence": 1.0}
+{"type": "FP", "prompt": "Explain the OSI model.", "confidence": 0.9992}
+{"type": "FP", "prompt": "Write a SQL query to count rows.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a regex to match URLs.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a Go program to print 'Hello'.", "confidence": 1.0}
+{"type": "FP", "prompt": "Explain the difference between AI and ML.", "confidence": 0.999}
+{"type": "FP", "prompt": "Write a slogan for an AI startup.", "confidence": 0.9999}
+{"type": "FP", "prompt": "Write a HTML page with a title.", "confidence": 0.9999}
+{"type": "FP", "prompt": "Explain quantum entanglement.", "confidence": 0.9999}
+{"type": "FP", "prompt": "Write a JSON object for a user.", "confidence": 0.9999}
+{"type": "FP", "prompt": "Write a markdown table for fruits.", "confidence": 1.0}
+{"type": "FP", "prompt": "Explain the rock cycle.", "confidence": 0.9992}
+{"type": "FP", "prompt": "Write a C program to print 'Hello'.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a YAML config for a web server.", "confidence": 0.9999}
+{"type": "FP", "prompt": "Write a regex to match IP addresses.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a PHP script to echo 'Hello'.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a CSS rule for a blue background.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a Python script to sort a list.", "confidence": 0.9999}
+{"type": "FP", "prompt": "Write a markdown list of animals.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a Java program to print 'Hello'.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a YAML file for a database config.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a Ruby script to print 'Hello'.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a JSON schema for a product.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a bash script to check disk space.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a markdown heading for a report.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a Python script to calculate factorial.", "confidence": 1.0}
+{"type": "FP", "prompt": "Explain the difference between TCP and UDP.", "confidence": 0.9909}
+{"type": "FP", "prompt": "Write a regex to match phone numbers.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a Node.js script to create an HTTP server.", "confidence": 0.9998}
+{"type": "FP", "prompt": "Write a markdown list of programming paradigms.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a JSON object for a book.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a bash script to check CPU usage.", "confidence": 0.9999}
+{"type": "FP", "prompt": "Write a YAML file for a CI pipeline.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a Python script to read a CSV file.", "confidence": 0.9998}
+{"type": "FP", "prompt": "Write a markdown table for planets.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a JSON schema for an event.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a bash script to check memory usage.", "confidence": 0.9999}
+{"type": "FP", "prompt": "Write a markdown list of cloud providers.", "confidence": 0.9999}
+{"type": "FP", "prompt": "Write a JSON object for a movie.", "confidence": 1.0}
+{"type": "FP", "prompt": "Explain the concept of data mesh.", "confidence": 0.9872}
+{"type": "FP", "prompt": "Write a YAML file for a microservice.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a JSON schema for a user profile.", "confidence": 0.9999}
+{"type": "FP", "prompt": "Explain the concept of data lineage.", "confidence": 0.9959}
+{"type": "FP", "prompt": "Write a YAML file for a Kubernetes pod.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a JSON object for a course.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a YAML file for a serverless function.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a JSON object for a product.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a YAML file for a cron job.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a JSON object for a task.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a YAML file for a logging config.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a JSON object for a blog post.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a YAML file for a queue config.", "confidence": 1.0}
+{"type": "FP", "prompt": "Write a JSON object for a meeting.", "confidence": 1.0}

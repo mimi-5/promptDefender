@@ -1,0 +1,74 @@
+.
+├── .gitignore
+├── LICENSE
+├── README.md
+├── THIRD_PARTY_NOTICES.md
+├── Tests
+│   ├── api.py
+│   ├── data
+│   │   ├── LLM_RESPONSES_LARGE.jsonl
+│   │   └── Prompt_INJECTION_And_Benign_DATASET.jsonl
+│   ├── errors_egress.jsonl
+│   ├── errors_layer3.jsonl
+│   ├── test1.ipynb
+│   ├── test2.ipynb
+│   ├── test3
+│   │   ├── results_vs_ollama.json
+│   │   ├── test2.py
+│   │   ├── test3.py
+│   │   └── test_vs_ollama.py
+│   ├── test_egress
+│   │   ├── create_egress_dataset.sh
+│   │   ├── generate_egress_dataset.py
+│   │   ├── setup_large_egress_dataset.sh
+│   │   └── test_egress.py
+│   └── test_pipline.py
+├── api.py
+├── app
+│   ├── __init__.py
+│   ├── app_chat.py
+│   └── app_chatbot.html
+├── app1
+│   ├── __init__.py
+│   ├── app_chat.py
+│   ├── app_chat_unprotected.html
+│   ├── app_chat_unprotected.py
+│   └── app_chatbot.html
+├── arborescence.txt
+├── arbre.py
+├── licenses
+│   ├── BSD-3-Clause.txt
+│   └── MIT-sinanw.txt
+├── notebooks
+│   └── ml_classification_v2.ipynb
+├── promptDefender_egress
+│   ├── __init__.py
+│   └── egress_llm_classifier.py
+├── promptDefender_firstLayer
+│   ├── detector.py
+│   ├── phases
+│   │   ├── malicious_detector.py
+│   │   └── structure_detector.py
+│   └── rules
+│       ├── malicious_patterns.py
+│       └── policy_patterns.py
+├── promptDefender_secondLayer
+│   ├── ml_artifacts
+│   │   ├── best_model_svm.joblib
+│   │   ├── model_meta.json
+│   │   └── scaler.joblib
+│   ├── ml_artifacts2
+│   │   ├── best_model_logistic_regression.joblib
+│   │   ├── model_meta.json
+│   │   └── scaler.joblib
+│   └── ml_detector2.py
+└── promptDefender_thirdLayer
+    ├── Transformer_detector.py
+    ├── api.py
+    ├── transformer_artifacts
+    │   ├── config.json
+    │   ├── model.safetensors
+    │   ├── model_meta.json
+    │   ├── tokenizer.json
+    │   └── tokenizer_config.json
+    └── transformer_classification_finetuned.ipynb

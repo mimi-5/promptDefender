@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PromptDefender — Secure Chat</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg:           #050a0f;
+    --bg2:          #080f17;
+    --bg3:          #0c1620;
+    --panel:        #0d1b2a;
+    --border:       #1a3a52;
+    --border2:      #0f2235;
+    --cyan:         #00e5ff;
+    --cyan-dim:     #00b8cc;
+    --cyan-glow:    rgba(0,229,255,0.15);
+    --green:        #00ff88;
+    --green-dim:    #00cc6a;
+    --green-glow:   rgba(0,255,136,0.12);
+    --red:          #ff2d55;
+    --red-dim:      #cc2244;
+    --red-glow:     rgba(255,45,85,0.15);
+    --orange:       #ff8c00;
+    --orange-glow:  rgba(255,140,0,0.15);
+    --yellow:       #ffd700;
+    --purple:       #bd00ff;
+    --text:         #c8dae8;
+    --text-dim:     #5a7a92;
+    --text-bright:  #e8f4ff;
+    --mono:         'Share Tech Mono', monospace;
+    --head:         'Orbitron', monospace;
+    --body:         'Rajdhani', sans-serif;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 15px;
+    min-height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── SCANLINES OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(0deg,
+      transparent, transparent 2px,
+      rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+    pointer-events: none; z-index: 9999;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: linear-gradient(90deg, var(--bg2) 0%, #071525 50%, var(--bg2) 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  }
+  .header-brand {
+    display: flex; align-items: center; gap: 14px;
+  }
+  .header-logo {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, var(--cyan-glow), transparent);
+    border: 1px solid var(--cyan);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 0 16px var(--cyan-glow);
+    animation: logoPulse 3s ease-in-out infinite;
+  }
+  @keyframes logoPulse {
+    0%,100% { box-shadow: 0 0 16px var(--cyan-glow); }
+    50%      { box-shadow: 0 0 28px rgba(0,229,255,0.3); }
+  }
+  .header-title {
+    font-family: var(--head);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--cyan);
+    letter-spacing: 2px;
+    text-shadow: 0 0 20px var(--cyan);
+  }
+  .header-sub {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+  }
+  .header-status {
+    display: flex; align-items: center; gap: 20px;
+  }
+  .status-pill {
+    display: flex; align-items: center; gap: 6px;
+    font-family: var(--mono); font-size: 10px;
+    color: var(--text-dim); letter-spacing: 1px;
+  }
+  .status-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--text-dim);
+    animation: blink 2s ease-in-out infinite;
+  }
+  .status-dot.online  { background: var(--green); box-shadow: 0 0 8px var(--green); }
+  .status-dot.offline { background: var(--red);   animation: none; }
+  @keyframes blink {
+    0%,100% { opacity:1; } 50% { opacity:0.3; }
+  }
+  .stats-bar {
+    display: flex; gap: 16px;
+  }
+  .stat-item {
+    text-align: center;
+    font-family: var(--mono);
+  }
+  .stat-val {
+    font-size: 16px; font-weight: 700;
+    color: var(--cyan);
+    text-shadow: 0 0 10px var(--cyan);
+  }
+  .stat-lbl {
+    font-size: 8px; color: var(--text-dim); letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .main {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    flex: 1;
+    overflow: hidden;
+    gap: 0;
+  }
+
+  /* ── CHAT PANEL ── */
+  .chat-panel {
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .chat-messages::-webkit-scrollbar { width: 4px; }
+  .chat-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* Welcome */
+  .welcome-msg {
+    text-align: center;
+    padding: 40px 20px;
+    animation: fadeIn .6s ease;
+  }
+  .welcome-icon { font-size: 48px; margin-bottom: 12px; }
+  .welcome-title {
+    font-family: var(--head);
+    font-size: 20px; color: var(--cyan);
+    letter-spacing: 3px; margin-bottom: 8px;
+  }
+  .welcome-text {
+    font-size: 13px; color: var(--text-dim); line-height: 1.6;
+  }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+  /* Messages */
+  .msg {
+    display: flex;
+    gap: 12px;
+    animation: slideIn .3s ease;
+    max-width: 85%;
+  }
+  @keyframes slideIn {
+    from { opacity:0; transform:translateX(-10px); }
+    to   { opacity:1; transform:translateX(0); }
+  }
+  .msg.user   { align-self: flex-end; flex-direction: row-reverse; }
+  .msg.system { align-self: center; max-width: 100%; }
+  .msg-avatar {
+    width: 34px; height: 34px; border-radius: 8px;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: bold;
+    font-family: var(--mono);
+  }
+  .msg.user    .msg-avatar { background: linear-gradient(135deg,#1a3a52,#0d2035); border:1px solid var(--cyan-dim); color:var(--cyan); }
+  .msg.bot     .msg-avatar { background: linear-gradient(135deg,#0a1f12,#051a0c); border:1px solid var(--green-dim); color:var(--green); }
+  .msg.blocked .msg-avatar { background: linear-gradient(135deg,#2a0d15,#1a0510); border:1px solid var(--red-dim);  color:var(--red); }
+  .msg-bubble {
+    padding: 12px 16px;
+    border-radius: 12px;
+    line-height: 1.6;
+    font-size: 14px;
+    position: relative;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .msg.user    .msg-bubble { background:#0d1e2e; border:1px solid var(--border); color:var(--text-bright); border-top-right-radius:4px; }
+  .msg.bot     .msg-bubble { background:#071510; border:1px solid rgba(0,255,136,0.2); color:var(--text-bright); border-top-left-radius:4px; }
+  .msg.blocked .msg-bubble { background:#160509; border:1px solid rgba(255,45,85,0.3); color:#ff8fa0; border-top-left-radius:4px; }
+  .msg.system  .msg-bubble {
+    background: linear-gradient(90deg, var(--bg2), var(--bg3));
+    border:1px solid var(--border2); color:var(--text-dim);
+    font-family:var(--mono); font-size:11px;
+    border-radius:6px; letter-spacing:.5px;
+  }
+  .msg-meta { font-family:var(--mono); font-size:9px; color:var(--text-dim); margin-top:5px; letter-spacing:.5px; }
+  .msg.user .msg-meta { text-align:right; }
+
+  /* Blocked badge */
+  .blocked-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(255,45,85,0.1); border:1px solid var(--red-dim);
+    border-radius:4px; padding:3px 8px;
+    font-family:var(--mono); font-size:10px; color:var(--red);
+    letter-spacing:1px; margin-bottom:6px;
+  }
+
+  /* Chat Input */
+  .chat-input-area {
+    padding: 16px 20px;
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    position: relative;
+  }
+  .chat-input-area::before {
+    content:'';
+    position:absolute; top:0; left:0; right:0; height:1px;
+    background:linear-gradient(90deg, transparent, var(--cyan-dim), transparent);
+  }
+  .input-row {
+    display: flex; gap: 10px; align-items: flex-end;
+  }
+  .chat-input {
+    flex: 1;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: var(--text-bright);
+    font-family: var(--body);
+    font-size: 14px;
+    resize: none;
+    height: 48px;
+    max-height: 120px;
+    transition: border-color .2s, box-shadow .2s;
+    outline: none;
+  }
+  .chat-input:focus {
+    border-color: var(--cyan-dim);
+    box-shadow: 0 0 12px var(--cyan-glow);
+  }
+  .chat-input::placeholder { color: var(--text-dim); }
+  .send-btn {
+    width: 48px; height: 48px;
+    background: linear-gradient(135deg, #004455, #002233);
+    border: 1px solid var(--cyan-dim);
+    border-radius: 10px;
+    color: var(--cyan);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all .2s;
+    flex-shrink: 0;
+  }
+  .send-btn:hover { background:linear-gradient(135deg,#006677,#003344); box-shadow:0 0 16px var(--cyan-glow); }
+  .send-btn:active { transform:scale(0.95); }
+  .send-btn:disabled { opacity:.4; cursor:not-allowed; }
+  .input-hint { font-family:var(--mono); font-size:9px; color:var(--text-dim); margin-top:6px; letter-spacing:.5px; }
+
+  /* ── SECURITY PANEL ── */
+  .security-panel {
+    background: var(--bg2);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .security-panel::-webkit-scrollbar { width:3px; }
+  .security-panel::-webkit-scrollbar-thumb { background:var(--border); }
+
+  .sec-header {
+    padding: 14px 18px 10px;
+    border-bottom: 1px solid var(--border2);
+    position: sticky; top:0; z-index:10;
+    background: var(--bg2);
+  }
+  .sec-title {
+    font-family: var(--head);
+    font-size: 11px; letter-spacing: 2px;
+    color: var(--cyan); text-transform: uppercase;
+    display:flex; align-items:center; gap:8px;
+  }
+  .sec-title::before {
+    content:''; width:3px; height:14px;
+    background: var(--cyan);
+    box-shadow: 0 0 8px var(--cyan);
+    border-radius:2px;
+  }
+
+  /* Verdict Banner */
+  .verdict-banner {
+    margin: 12px 16px 8px;
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex; align-items: center; gap: 10px;
+    border: 1px solid transparent;
+    transition: all .4s ease;
+    position:relative; overflow:hidden;
+  }
+  .verdict-banner::before {
+    content:''; position:absolute; inset:0;
+    background: var(--banner-bg); opacity:.08; pointer-events:none;
+  }
+  .verdict-banner.idle    { --banner-bg:var(--cyan); border-color:var(--border2); }
+  .verdict-banner.allowed { --banner-bg:var(--green); border-color:rgba(0,255,136,.3); }
+  .verdict-banner.blocked { --banner-bg:var(--red);   border-color:rgba(255,45,85,.3); }
+  .verdict-banner.egress-blocked { --banner-bg:var(--orange); border-color:rgba(255,140,0,.4); }
+  .verdict-icon { font-size:24px; flex-shrink:0; }
+  .verdict-label {
+    font-family: var(--head); font-size:14px; font-weight:700;
+    letter-spacing:2px;
+  }
+  .verdict-banner.idle .verdict-label    { color:var(--text-dim); }
+  .verdict-banner.allowed .verdict-label { color:var(--green); text-shadow:0 0 10px var(--green); }
+  .verdict-banner.blocked .verdict-label { color:var(--red);   text-shadow:0 0 10px var(--red); }
+  .verdict-banner.egress-blocked .verdict-label { color:var(--orange); text-shadow:0 0 10px var(--orange); }
+  .verdict-reason {
+    font-family: var(--mono); font-size:10px; color:var(--text-dim);
+    margin-top:3px; line-height:1.4;
+  }
+
+  /* Layer Cards */
+  .layers-container { padding:0 16px 12px; display:flex; flex-direction:column; gap:10px; }
+
+  .layer-card {
+    border-radius:10px;
+    border:1px solid var(--border2);
+    background:linear-gradient(135deg,var(--bg3),var(--panel));
+    overflow:hidden;
+    transition:border-color .3s, box-shadow .3s;
+  }
+  .layer-card.active-blocked { border-color:rgba(255,45,85,.4); box-shadow:0 0 16px rgba(255,45,85,.1); }
+  .layer-card.active-allowed { border-color:rgba(0,255,136,.3); box-shadow:0 0 16px rgba(0,255,136,.08); }
+  .layer-card.active-egress-blocked { border-color:rgba(255,140,0,.5); box-shadow:0 0 16px rgba(255,140,0,.15); }
+
+  .layer-head {
+    padding:10px 14px;
+    display:flex; align-items:center; justify-content:space-between;
+    cursor:pointer; user-select:none;
+  }
+  .layer-head-left { display:flex; align-items:center; gap:10px; }
+  .layer-num {
+    width:26px; height:26px; border-radius:6px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-size:11px; font-weight:bold;
+    border:1px solid var(--border);
+    background: var(--bg); color:var(--text-dim);
+    transition:all .3s;
+    flex-shrink:0;
+  }
+  .layer-card.active-blocked .layer-num  { border-color:var(--red);    color:var(--red);    background:rgba(255,45,85,.1);  box-shadow:0 0 8px rgba(255,45,85,.2); }
+  .layer-card.active-allowed .layer-num  { border-color:var(--green);  color:var(--green);  background:rgba(0,255,136,.08); box-shadow:0 0 8px rgba(0,255,136,.15); }
+  .layer-card.active-egress-blocked .layer-num { border-color:var(--orange); color:var(--orange); background:rgba(255,140,0,.1); box-shadow:0 0 8px rgba(255,140,0,.2); }
+  .layer-info { }
+  .layer-name {
+    font-family:var(--mono); font-size:11px; color:var(--text-bright);
+    letter-spacing:.5px; font-weight:600;
+  }
+  .layer-tech {
+    font-family:var(--mono); font-size:9px; color:var(--text-dim);
+    letter-spacing:.5px;
+  }
+  .layer-badge {
+    font-family:var(--mono); font-size:9px; font-weight:700;
+    padding:3px 8px; border-radius:4px; letter-spacing:1px;
+    border:1px solid transparent;
+    transition:all .3s;
+  }
+  .layer-badge.pending  { color:var(--text-dim); border-color:var(--border2); }
+  .layer-badge.pass     { color:var(--green);    border-color:rgba(0,255,136,.3); background:rgba(0,255,136,.05); }
+  .layer-badge.fail     { color:var(--red);      border-color:rgba(255,45,85,.3); background:rgba(255,45,85,.07); }
+  .layer-badge.skip     { color:var(--text-dim); border-color:var(--border2); font-style:italic; }
+  .layer-badge.warn     { color:var(--orange);   border-color:rgba(255,140,0,.3); background:rgba(255,140,0,.07); }
+  .layer-badge.safe     { color:var(--green);    border-color:rgba(0,255,136,.3); background:rgba(0,255,136,.05); }
+  .layer-badge.unsafe   { color:var(--orange);   border-color:rgba(255,140,0,.3); background:rgba(255,140,0,.07); }
+
+  /* Layer Body (collapsible) */
+  .layer-body {
+    border-top: 1px solid var(--border2);
+    padding: 12px 14px;
+    display:none;
+  }
+  .layer-body.open { display:block; }
+
+  /* Metric rows */
+  .metric-row {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:4px 0; border-bottom:1px solid rgba(26,58,82,.4);
+  }
+  .metric-row:last-child { border-bottom:none; }
+  .metric-key {
+    font-family:var(--mono); font-size:10px; color:var(--text-dim); letter-spacing:.5px;
+  }
+  .metric-val {
+    font-family:var(--mono); font-size:11px; color:var(--text-bright); letter-spacing:.5px;
+  }
+  .metric-val.green  { color:var(--green);  }
+  .metric-val.red    { color:var(--red);    }
+  .metric-val.orange { color:var(--orange); }
+  .metric-val.cyan   { color:var(--cyan);   }
+
+  /* Confidence bar */
+  .conf-bar-wrap {
+    display:flex; align-items:center; gap:8px; margin-top:8px;
+  }
+  .conf-bar {
+    flex:1; height:4px; background:var(--border2); border-radius:2px; overflow:hidden;
+  }
+  .conf-fill {
+    height:100%; border-radius:2px;
+    background:linear-gradient(90deg, var(--cyan-dim), var(--cyan));
+    transition:width .6s ease;
+    box-shadow:0 0 6px var(--cyan);
+  }
+  .conf-fill.danger { background:linear-gradient(90deg, var(--red-dim), var(--red)); box-shadow:0 0 6px var(--red); }
+  .conf-fill.warn   { background:linear-gradient(90deg, #cc6600, var(--orange)); box-shadow:0 0 6px var(--orange); }
+  .conf-fill.safe   { background:linear-gradient(90deg, var(--green-dim), var(--green)); box-shadow:0 0 6px var(--green); }
+  .conf-pct {
+    font-family:var(--mono); font-size:11px; min-width:36px; text-align:right;
+    color:var(--text-bright);
+  }
+
+  /* Matches list */
+  .matches-list {
+    margin-top:8px;
+    display:flex; flex-wrap:wrap; gap:4px;
+  }
+  .match-tag {
+    font-family:var(--mono); font-size:9px;
+    padding:2px 7px; border-radius:3px;
+    background:rgba(255,45,85,.08); border:1px solid rgba(255,45,85,.2);
+    color:var(--red-dim); letter-spacing:.5px;
+  }
+
+  /* Egress specific */
+  .egress-label-big {
+    text-align:center; padding:10px 0;
+    font-family:var(--head); font-size:16px; letter-spacing:2px;
+    font-weight:700;
+  }
+  .egress-label-big.safe   { color:var(--green); text-shadow:0 0 12px var(--green); }
+  .egress-label-big.unsafe { color:var(--orange); text-shadow:0 0 12px var(--orange); }
+
+  /* Section divider */
+  .sec-divider {
+    margin:4px 16px 8px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .sec-divider-line { flex:1; height:1px; background:var(--border2); }
+  .sec-divider-text {
+    font-family:var(--mono); font-size:9px; color:var(--text-dim);
+    letter-spacing:2px; text-transform:uppercase; white-space:nowrap;
+  }
+
+  /* Progress / Loading */
+  .analyzing-overlay {
+    display:none;
+    position:absolute; inset:0;
+    background:rgba(5,10,15,.85);
+    z-index:50;
+    align-items:center; justify-content:center;
+    flex-direction:column; gap:12px;
+    backdrop-filter:blur(2px);
+  }
+  .analyzing-overlay.active { display:flex; }
+  .spin {
+    width:40px; height:40px;
+    border:2px solid var(--border);
+    border-top-color:var(--cyan);
+    border-radius:50%;
+    animation:spin .8s linear infinite;
+  }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .analyzing-text {
+    font-family:var(--mono); font-size:11px; color:var(--cyan);
+    letter-spacing:2px; animation:textBlink 1s ease-in-out infinite;
+  }
+  @keyframes textBlink { 0%,100%{opacity:1;} 50%{opacity:.4;} }
+
+  /* Footer */
+  .footer {
+    padding:6px 20px;
+    background:var(--bg2); border-top:1px solid var(--border2);
+    display:flex; justify-content:space-between; align-items:center;
+    flex-shrink:0;
+  }
+  .footer-info { font-family:var(--mono); font-size:9px; color:var(--text-dim); letter-spacing:.5px; }
+  .footer-layers { display:flex; gap:8px; }
+  .footer-layer {
+    font-family:var(--mono); font-size:8px; padding:2px 6px;
+    border-radius:3px; letter-spacing:.5px;
+    border:1px solid var(--border2); color:var(--text-dim);
+  }
+  .footer-layer.on { border-color:rgba(0,229,255,.3); color:var(--cyan); background:rgba(0,229,255,.04); }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════ HEADER ══════════════════════════════ -->
+<header class="header">
+  <div class="header-brand">
+    <div class="header-logo">🛡</div>
+    <div>
+      <div class="header-title">PROMPTDEFENDER</div>
+      <div class="header-sub">SECURE LLM GATEWAY v2.0 — 4-LAYER PROTECTION</div>
+    </div>
+  </div>
+  <div class="header-status">
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-val" id="stat-total">0</div>
+        <div class="stat-lbl">TOTAL</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-val" style="color:var(--green);" id="stat-allowed">0</div>
+        <div class="stat-lbl">ALLOWED</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-val" style="color:var(--red);" id="stat-blocked">0</div>
+        <div class="stat-lbl">BLOCKED</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:4px;">
+      <div class="status-pill">
+        <div class="status-dot" id="dot-api"></div>
+        <span id="lbl-api">API</span>
+      </div>
+      <div class="status-pill">
+        <div class="status-dot" id="dot-llm"></div>
+        <span id="lbl-llm">LLM</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════════════════════ MAIN ══════════════════════════════ -->
+<div class="main">
+
+  <!-- CHAT PANEL -->
+  <div class="chat-panel">
+    <div class="chat-messages" id="chat-messages">
+      <div class="welcome-msg" id="welcome">
+        <div class="welcome-icon">⬡</div>
+        <div class="welcome-title">SECURE CHANNEL OPEN</div>
+        <div class="welcome-text">All messages are analyzed through 4 security layers.<br>
+        L1 Regex → L2 BERT → L3 XLM-RoBERTa → L4 Egress</div>
+      </div>
+    </div>
+
+    <div class="chat-input-area">
+      <div class="input-row">
+        <textarea class="chat-input" id="chat-input"
+          placeholder="Enter your message… (Enter to send, Shift+Enter for newline)"
+          rows="1"></textarea>
+        <button class="send-btn" id="send-btn" title="Send">➤</button>
+      </div>
+      <div class="input-hint">INGRESS SCANNING ACTIVE — L1+L2+L3 | EGRESS CONTROL ACTIVE — L4</div>
+    </div>
+  </div>
+
+  <!-- SECURITY PANEL -->
+  <div class="security-panel" id="security-panel">
+
+    <div class="sec-header">
+      <div class="sec-title">Security Analysis</div>
+    </div>
+
+    <!-- Verdict Banner -->
+    <div class="verdict-banner idle" id="verdict-banner">
+      <div class="verdict-icon" id="verdict-icon">◈</div>
+      <div>
+        <div class="verdict-label" id="verdict-label">AWAITING INPUT</div>
+        <div class="verdict-reason" id="verdict-reason">No analysis performed yet.</div>
+      </div>
+    </div>
+
+    <!-- INGRESS section -->
+    <div class="sec-divider">
+      <div class="sec-divider-line"></div>
+      <div class="sec-divider-text">▶ INGRESS — L1/L2/L3</div>
+      <div class="sec-divider-line"></div>
+    </div>
+
+    <div class="layers-container" id="layers-ingress">
+
+      <!-- LAYER 1 -->
+      <div class="layer-card" id="card-l1">
+        <div class="layer-head" onclick="toggleLayer('body-l1')">
+          <div class="layer-head-left">
+            <div class="layer-num">L1</div>
+            <div class="layer-info">
+              <div class="layer-name">REGEX / SIGNATURES</div>
+              <div class="layer-tech">PromptInjectionDetector</div>
+            </div>
+          </div>
+          <div class="layer-badge pending" id="badge-l1">—</div>
+        </div>
+        <div class="layer-body" id="body-l1">
+          <div class="metric-row">
+            <span class="metric-key">POLICY-LIKE</span>
+            <span class="metric-val" id="l1-policy">—</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-key">MALICIOUS</span>
+            <span class="metric-val" id="l1-malicious">—</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-key">PUPPETRY</span>
+            <span class="metric-val" id="l1-puppetry">—</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-key">MALICIOUS SCORE</span>
+            <span class="metric-val cyan" id="l1-score">—</span>
+          </div>
+          <div id="l1-matches-section" style="display:none;">
+            <div class="metric-key" style="margin-top:8px;margin-bottom:4px;">MATCHES</div>
+            <div class="matches-list" id="l1-matches"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LAYER 2 -->
+      <div class="layer-card" id="card-l2">
+        <div class="layer-head" onclick="toggleLayer('body-l2')">
+          <div class="layer-head-left">
+            <div class="layer-num">L2</div>
+            <div class="layer-info">
+              <div class="layer-name">ML / BERT</div>
+              <div class="layer-tech">MLDetector</div>
+            </div>
+          </div>
+          <div class="layer-badge pending" id="badge-l2">—</div>
+        </div>
+        <div class="layer-body" id="body-l2">
+          <div class="metric-row">
+            <span class="metric-key">INJECTION</span>
+            <span class="metric-val" id="l2-injection">—</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-key">LABEL</span>
+            <span class="metric-val cyan" id="l2-label">—</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-key">MODEL</span>
+            <span class="metric-val" id="l2-model">—</span>
+          </div>
+          <div class="conf-bar-wrap">
+            <div class="conf-bar"><div class="conf-fill" id="l2-conf-fill" style="width:0%"></div></div>
+            <div class="conf-pct" id="l2-conf-pct">0%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LAYER 3 -->
+      <div class="layer-card" id="card-l3">
+        <div class="layer-head" onclick="toggleLayer('body-l3')">
+          <div class="layer-head-left">
+            <div class="layer-num">L3</div>
+            <div class="layer-info">
+              <div class="layer-name">XLM-RoBERTa</div>
+              <div class="layer-tech">TransformerDetector</div>
+            </div>
+          </div>
+          <div class="layer-badge pending" id="badge-l3">—</div>
+        </div>
+        <div class="layer-body" id="body-l3">
+          <div class="metric-row">
+            <span class="metric-key">INJECTION</span>
+            <span class="metric-val" id="l3-injection">—</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-key">THRESHOLD</span>
+            <span class="metric-val cyan" id="l3-threshold">—</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-key">ELAPSED</span>
+            <span class="metric-val" id="l3-elapsed">—</span>
+          </div>
+          <div class="conf-bar-wrap">
+            <div class="conf-bar"><div class="conf-fill" id="l3-conf-fill" style="width:0%"></div></div>
+            <div class="conf-pct" id="l3-conf-pct">0%</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /layers-ingress -->
+
+    <!-- EGRESS section -->
+    <div class="sec-divider">
+      <div class="sec-divider-line"></div>
+      <div class="sec-divider-text">◀ EGRESS — L4</div>
+      <div class="sec-divider-line"></div>
+    </div>
+
+    <div class="layers-container" id="layers-egress">
+
+      <!-- LAYER 4 -->
+      <div class="layer-card" id="card-l4">
+        <div class="layer-head" onclick="toggleLayer('body-l4')">
+          <div class="layer-head-left">
+            <div class="layer-num">L4</div>
+            <div class="layer-info">
+              <div class="layer-name">EGRESS CLASSIFIER</div>
+              <div class="layer-tech">EgressLLMClassifier · phi3</div>
+            </div>
+          </div>
+          <div class="layer-badge pending" id="badge-l4">—</div>
+        </div>
+        <div class="layer-body" id="body-l4">
+          <div class="egress-label-big" id="l4-big-label">—</div>
+          <div class="metric-row">
+            <span class="metric-key">UNSAFE</span>
+            <span class="metric-val" id="l4-unsafe">—</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-key">LABEL</span>
+            <span class="metric-val cyan" id="l4-label">—</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-key">CONFIDENCE</span>
+            <span class="metric-val" id="l4-confidence">—</span>
+          </div>
+          <div class="metric-row" id="l4-reason-row" style="display:none;">
+            <span class="metric-key">REASON</span>
+            <span class="metric-val orange" id="l4-reason" style="font-size:9px;text-align:right;max-width:180px;word-wrap:break-word;"></span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-key">ELAPSED</span>
+            <span class="metric-val" id="l4-elapsed">—</span>
+          </div>
+          <div class="conf-bar-wrap" id="l4-conf-bar-wrap" style="display:none;">
+            <div class="conf-bar"><div class="conf-fill safe" id="l4-conf-fill" style="width:0%"></div></div>
+            <div class="conf-pct" id="l4-conf-pct">0%</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /layers-egress -->
+
+    <!-- METADATA -->
+    <div class="sec-divider">
+      <div class="sec-divider-line"></div>
+      <div class="sec-divider-text">METADATA</div>
+      <div class="sec-divider-line"></div>
+    </div>
+    <div style="padding:0 16px 16px;">
+      <div class="metric-row">
+        <span class="metric-key">TOTAL ELAPSED</span>
+        <span class="metric-val cyan" id="meta-elapsed">—</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-key">LLM BACKEND</span>
+        <span class="metric-val" id="meta-llm">—</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-key">SECURITY API</span>
+        <span class="metric-val" id="meta-api">—</span>
+      </div>
+    </div>
+
+  </div><!-- /security-panel -->
+</div><!-- /main -->
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-info" id="footer-time">PromptDefender © 2025 — All prompts secured</div>
+  <div class="footer-layers">
+    <div class="footer-layer on">L1 REGEX</div>
+    <div class="footer-layer on">L2 BERT</div>
+    <div class="footer-layer on">L3 TRANSFORMER</div>
+    <div class="footer-layer on" style="border-color:rgba(255,140,0,.4);color:var(--orange);">L4 EGRESS</div>
+  </div>
+</footer>
+
+<!-- ══════════════════════════════ JS ══════════════════════════════ -->
+<script>
+const API = 'http://localhost:5000';
+let statsTotal = 0, statsAllowed = 0, statsBlocked = 0;
+let isAnalyzing = false;
+
+// ── Utils ────────────────────────────────────────────────────────────────────
+function now() {
+  return new Date().toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+
+function toggleLayer(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('open');
+}
+
+function setCardState(card, state) {
+  // state: '' | 'active-allowed' | 'active-blocked' | 'active-egress-blocked'
+  const el = document.getElementById(card);
+  if (!el) return;
+  el.classList.remove('active-allowed','active-blocked','active-egress-blocked');
+  if (state) el.classList.add(state);
+}
+
+function setBadge(id, text, cls) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = text;
+  el.className = 'layer-badge ' + cls;
+}
+
+function setMetric(id, text, color) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = text;
+  el.className = 'metric-val' + (color ? ' '+color : '');
+}
+
+function setConfBar(fillId, pctId, val, cls) {
+  const fill = document.getElementById(fillId);
+  const pct  = document.getElementById(pctId);
+  if (fill) { fill.style.width = (val*100).toFixed(1)+'%'; fill.className = 'conf-fill ' + (cls||''); }
+  if (pct)  pct.textContent = (val*100).toFixed(1)+'%';
+}
+
+function bool2str(val) { return val ? 'TRUE' : 'FALSE'; }
+function boolColor(val) { return val ? 'red' : 'green'; }
+
+function openLayerBody(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.add('open');
+}
+
+// ── Health check ─────────────────────────────────────────────────────────────
+async function checkHealth() {
+  try {
+    const r = await fetch(API+'/health');
+    const d = await r.json();
+    const apiDot = document.getElementById('dot-api');
+    const llmDot = document.getElementById('dot-llm');
+    const apiLbl = document.getElementById('lbl-api');
+    const llmLbl = document.getElementById('lbl-llm');
+
+    if (d.status === 'ok') {
+      apiDot.className='status-dot online';
+      apiLbl.textContent='API READY';
+    }
+    if (d.ollama === 'ready') {
+      llmDot.className='status-dot online';
+      llmLbl.textContent=(d.ollama_model||'LLM').toUpperCase();
+    } else {
+      llmDot.className='status-dot offline';
+      llmLbl.textContent='LLM MOCK';
+    }
+  } catch {
+    document.getElementById('dot-api').className='status-dot offline';
+    document.getElementById('lbl-api').textContent='API DOWN';
+  }
+}
+
+// ── Reset panel ──────────────────────────────────────────────────────────────
+function resetSecurityPanel() {
+  const vb = document.getElementById('verdict-banner');
+  vb.className='verdict-banner idle';
+  document.getElementById('verdict-icon').textContent='◈';
+  document.getElementById('verdict-label').textContent='ANALYZING…';
+  document.getElementById('verdict-reason').textContent='';
+
+  ['l1','l2','l3'].forEach(l => {
+    setBadge('badge-'+l, '…', 'pending');
+    setCardState('card-'+l, '');
+  });
+  setBadge('badge-l4','…','pending');
+  setCardState('card-l4','');
+
+  // Reset layer bodies
+  ['body-l1','body-l2','body-l3','body-l4'].forEach(id => {
+    document.getElementById(id)?.classList.remove('open');
+  });
+}
+
+// ── Render security results ──────────────────────────────────────────────────
+function renderSecurity(data) {
+  const verdict = data.verdict;
+  const l1 = data.layer1 || {};
+  const l2 = data.layer2;
+  const l3 = data.layer3;
+  const l4 = data.layer4_egress;
+  const meta = data.metadata || {};
+
+  // ── Verdict Banner ───────────────────────────────────────────────────────
+  const vb = document.getElementById('verdict-banner');
+  const isEgressBlocked = (verdict==='BLOCKED_EGRESS' || data.blocked_by==='layer4_egress');
+
+  if (verdict==='ALLOWED' && !isEgressBlocked) {
+    vb.className='verdict-banner allowed';
+    document.getElementById('verdict-icon').textContent='✓';
+    document.getElementById('verdict-label').textContent='ALLOWED';
+  } else if (isEgressBlocked) {
+    vb.className='verdict-banner egress-blocked';
+    document.getElementById('verdict-icon').textContent='⚠';
+    document.getElementById('verdict-label').textContent='EGRESS BLOCKED';
+  } else if (verdict==='BLOCKED') {
+    vb.className='verdict-banner blocked';
+    document.getElementById('verdict-icon').textContent='✕';
+    document.getElementById('verdict-label').textContent='BLOCKED';
+  } else {
+    vb.className='verdict-banner idle';
+    document.getElementById('verdict-icon').textContent='?';
+    document.getElementById('verdict-label').textContent=verdict;
+  }
+  document.getElementById('verdict-reason').textContent=data.reason||'';
+
+  // ── Layer 1 ──────────────────────────────────────────────────────────────
+  const l1Blocked = l1.is_puppetry;
+  if (l1Blocked) {
+    setBadge('badge-l1','BLOCKED','fail');
+    setCardState('card-l1','active-blocked');
+  } else {
+    setBadge('badge-l1','PASS','pass');
+    setCardState('card-l1','active-allowed');
+  }
+  setMetric('l1-policy',   bool2str(l1.policy_like),   boolColor(l1.policy_like));
+  setMetric('l1-malicious',bool2str(l1.malicious),     boolColor(l1.malicious));
+  setMetric('l1-puppetry', bool2str(l1.is_puppetry),   boolColor(l1.is_puppetry));
+  setMetric('l1-score',    String(l1.malicious_score||0), l1.malicious_score>0?'red':'green');
+  const matches = [...(l1.matches?.malicious||[]), ...(l1.matches?.structure||[])];
+  const matchSec = document.getElementById('l1-matches-section');
+  if (matches.length>0) {
+    matchSec.style.display='block';
+    document.getElementById('l1-matches').innerHTML =
+      matches.map(m=>`<span class="match-tag">${m}</span>`).join('');
+  } else {
+    matchSec.style.display='none';
+  }
+  if (l1Blocked) openLayerBody('body-l1');
+
+  // ── Layer 2 ──────────────────────────────────────────────────────────────
+  if (!l2) {
+    setBadge('badge-l2','SKIPPED','skip');
+    setCardState('card-l2','');
+    setMetric('l2-injection','—');
+    setMetric('l2-label','—');
+    setMetric('l2-model','—');
+    setConfBar('l2-conf-fill','l2-conf-pct',0,'');
+  } else {
+    const conf = l2.confidence||0;
+    const l2Blocked = conf>0.9;
+    if (l2Blocked) {
+      setBadge('badge-l2','BLOCKED','fail');
+      setCardState('card-l2','active-blocked');
+      openLayerBody('body-l2');
+    } else {
+      setBadge('badge-l2','PASS','pass');
+      setCardState('card-l2','active-allowed');
+    }
+    setMetric('l2-injection', bool2str(l2.is_injection), boolColor(l2.is_injection));
+    setMetric('l2-label', l2.label||'?', 'cyan');
+    setMetric('l2-model', l2.model_used||'?', '');
+    const confClass = l2Blocked ? 'danger' : (conf>0.7 ? 'warn' : '');
+    setConfBar('l2-conf-fill','l2-conf-pct', conf, confClass);
+  }
+
+  // ── Layer 3 ──────────────────────────────────────────────────────────────
+  if (!l3) {
+    setBadge('badge-l3','SKIPPED','skip');
+    setCardState('card-l3','');
+    setMetric('l3-injection','—');
+    setMetric('l3-threshold','—');
+    setMetric('l3-elapsed','—');
+    setConfBar('l3-conf-fill','l3-conf-pct',0,'');
+  } else {
+    const conf3 = l3.confidence||0;
+    const l3Blocked = l3.is_injection && conf3>0.9;
+    if (l3Blocked) {
+      setBadge('badge-l3','BLOCKED','fail');
+      setCardState('card-l3','active-blocked');
+      openLayerBody('body-l3');
+    } else {
+      setBadge('badge-l3','PASS','pass');
+      setCardState('card-l3','active-allowed');
+    }
+    setMetric('l3-injection', bool2str(l3.is_injection), boolColor(l3.is_injection));
+    setMetric('l3-threshold', l3.threshold!=null ? String(l3.threshold) : '—', 'cyan');
+    setMetric('l3-elapsed', l3.elapsed_ms!=null ? l3.elapsed_ms.toFixed(1)+'ms' : '—', '');
+    const c3Class = l3Blocked ? 'danger' : (conf3>0.7 ? 'warn' : '');
+    setConfBar('l3-conf-fill','l3-conf-pct', conf3, c3Class);
+  }
+
+  // ── Layer 4 — EGRESS ─────────────────────────────────────────────────────
+  if (!l4) {
+    setBadge('badge-l4','SKIPPED','skip');
+    setCardState('card-l4','');
+    document.getElementById('l4-big-label').textContent='—';
+    document.getElementById('l4-big-label').className='egress-label-big';
+    setMetric('l4-unsafe','—');
+    setMetric('l4-label','—');
+    setMetric('l4-confidence','—');
+    setMetric('l4-elapsed','—');
+    document.getElementById('l4-reason-row').style.display='none';
+    document.getElementById('l4-conf-bar-wrap').style.display='none';
+  } else {
+    const unsafe = l4.is_unsafe;
+
+    if (unsafe) {
+      setBadge('badge-l4','UNSAFE','unsafe');
+      setCardState('card-l4','active-egress-blocked');
+      document.getElementById('l4-big-label').textContent='⚠ UNSAFE';
+      document.getElementById('l4-big-label').className='egress-label-big unsafe';
+      openLayerBody('body-l4');
+    } else {
+      setBadge('badge-l4','SAFE','safe');
+      setCardState('card-l4','active-allowed');
+      document.getElementById('l4-big-label').textContent='✓ SAFE';
+      document.getElementById('l4-big-label').className='egress-label-big safe';
+    }
+
+    setMetric('l4-unsafe', bool2str(unsafe), boolColor(unsafe));
+    setMetric('l4-label', l4.label||'?', 'cyan');
+    setMetric('l4-confidence', l4.confidence||'—', '');
+    setMetric('l4-elapsed', l4.elapsed_ms!=null ? l4.elapsed_ms.toFixed(1)+'ms' : '—', '');
+
+    if (l4.reason && unsafe) {
+      document.getElementById('l4-reason-row').style.display='flex';
+      document.getElementById('l4-reason').textContent=l4.reason;
+    } else {
+      document.getElementById('l4-reason-row').style.display='none';
+    }
+
+    // confidence bar for egress (if numeric)
+    const confVal = parseFloat(l4.confidence);
+    if (!isNaN(confVal)) {
+      document.getElementById('l4-conf-bar-wrap').style.display='flex';
+      const cClass = unsafe ? 'warn' : 'safe';
+      setConfBar('l4-conf-fill','l4-conf-pct', confVal, cClass);
+    }
+  }
+
+  // ── Metadata ─────────────────────────────────────────────────────────────
+  const elapsed = meta.total_elapsed_ms || meta.elapsed_ms;
+  document.getElementById('meta-elapsed').textContent = elapsed!=null ? elapsed.toFixed(1)+'ms' : '—';
+  document.getElementById('meta-llm').textContent = meta.llm_backend||'—';
+  document.getElementById('meta-api').textContent = meta.security_api||'—';
+}
+
+// ── Add message to chat ──────────────────────────────────────────────────────
+function addMessage(role, text, extraClass) {
+  const container = document.getElementById('chat-messages');
+  document.getElementById('welcome')?.remove();
+
+  const div = document.createElement('div');
+  div.className = 'msg ' + role + (extraClass?' '+extraClass:'');
+
+  const avatarMap = {user:'U', bot:'AI', blocked:'⛔', system:'ℹ'};
+  const avatar = document.createElement('div');
+  avatar.className='msg-avatar';
+  avatar.textContent=avatarMap[role]||'?';
+
+  const wrap = document.createElement('div');
+  const bubble = document.createElement('div');
+  bubble.className='msg-bubble';
+
+  if (role==='blocked') {
+    const badge = document.createElement('div');
+    badge.className='blocked-badge';
+    badge.innerHTML='⛔ BLOCKED BY SECURITY LAYER';
+    bubble.appendChild(badge);
+  }
+
+  const txt = document.createElement('div');
+  txt.textContent=text;
+  bubble.appendChild(txt);
+
+  const meta = document.createElement('div');
+  meta.className='msg-meta';
+  meta.textContent=now();
+  wrap.appendChild(bubble);
+  wrap.appendChild(meta);
+
+  div.appendChild(avatar);
+  div.appendChild(wrap);
+  container.appendChild(div);
+  container.scrollTop=container.scrollHeight;
+}
+
+// ── Send ─────────────────────────────────────────────────────────────────────
+const history = [];
+
+async function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const btn   = document.getElementById('send-btn');
+  const prompt = input.value.trim();
+  if (!prompt || isAnalyzing) return;
+
+  isAnalyzing=true;
+  btn.disabled=true;
+  input.value='';
+  input.style.height='48px';
+
+  addMessage('user', prompt);
+  resetSecurityPanel();
+
+  try {
+    const r = await fetch(API+'/chat', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({prompt, history:[...history]})
+    });
+
+    const data = await r.json();
+    renderSecurity(data);
+
+    statsTotal++;
+    document.getElementById('stat-total').textContent=statsTotal;
+
+    if (r.ok && data.response) {
+      addMessage('bot', data.response);
+      history.push({role:'user', content:prompt});
+      history.push({role:'assistant', content:data.response});
+      if (history.length>12) history.splice(0,2);
+      statsAllowed++;
+      document.getElementById('stat-allowed').textContent=statsAllowed;
+    } else {
+      const isEgress = data.blocked_by==='layer4_egress' || data.verdict==='BLOCKED_EGRESS';
+      const errMsg = isEgress
+        ? '⚠ Response blocked by Egress (L4): unsafe content detected.'
+        : (data.reason || 'Request blocked by security layer.');
+      addMessage('blocked', errMsg);
+      statsBlocked++;
+      document.getElementById('stat-blocked').textContent=statsBlocked;
+    }
+
+  } catch(e) {
+    renderSecurity({verdict:'ERROR', reason:String(e), layer1:{}, layer2:null, layer3:null, layer4_egress:null, metadata:{}});
+    addMessage('system', 'Error connecting to API: '+e.message);
+  } finally {
+    isAnalyzing=false;
+    btn.disabled=false;
+    input.focus();
+  }
+}
+
+// ── Input auto-resize ────────────────────────────────────────────────────────
+document.getElementById('chat-input').addEventListener('input', function() {
+  this.style.height='48px';
+  this.style.height=Math.min(this.scrollHeight,120)+'px';
+});
+
+document.getElementById('chat-input').addEventListener('keydown', function(e) {
+  if (e.key==='Enter' && !e.shiftKey) {
+    e.preventDefault(); sendMessage();
+  }
+});
+
+document.getElementById('send-btn').addEventListener('click', sendMessage);
+
+// ── Footer clock ─────────────────────────────────────────────────────────────
+function updateFooter() {
+  const d = new Date();
+  document.getElementById('footer-time').textContent =
+    `PromptDefender © ${d.getFullYear()} — ${d.toLocaleString()}`;
+}
+setInterval(updateFooter,1000);
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+checkHealth();
+setInterval(checkHealth, 10000);
+</script>
+</body>
+</html>
