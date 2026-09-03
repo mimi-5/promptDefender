@@ -159,4 +159,4 @@ The `Tests/` folder contains the scripts and notebooks used to evaluate the perf
 
 ## 📄 License
 
-See [`LICENSE`](./LICENSE) and [`THIRD_PARTY_NOTICES.md`](./THIRD_PARTY_NOTICES.md) for third-party licenses used in the project.
+See [`LICENSE`](./licenses) and [`THIRD_PARTY_NOTICES.md`](./THIRD_PARTY_NOTICES.md) for third-party licenses used in the project.
